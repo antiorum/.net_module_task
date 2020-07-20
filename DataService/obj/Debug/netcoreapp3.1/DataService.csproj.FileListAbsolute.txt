@@ -1,0 +1,9 @@
+D:\с#\ModuleTask\ScrumPoker\DataService\bin\Debug\netcoreapp3.1\DataService.deps.json
+D:\с#\ModuleTask\ScrumPoker\DataService\bin\Debug\netcoreapp3.1\DataService.dll
+D:\с#\ModuleTask\ScrumPoker\DataService\bin\Debug\netcoreapp3.1\DataService.pdb
+D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.AssemblyInfoInputs.cache
+D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.AssemblyInfo.cs
+D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.csproj.CoreCompileInputs.cache
+D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.dll
+D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.pdb
+D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.csprojAssemblyReference.cache

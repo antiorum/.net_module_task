@@ -1,0 +1,16 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=098c91da_002Db478_002D4e12_002D8258_002D3ebe13fa669b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.RoomServiceTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ac6bf695_002De67c_002D455c_002D9f28_002Dde5c4132d5ef/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.RoomServiceTests.Create&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb87052f_002D8c20_002D4b03_002Db1c6_002D1449c9ea6490/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.RoomServiceTests.Create&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
