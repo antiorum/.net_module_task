@@ -1,70 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataService;
-using DataService.Models;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ScrumPokerWeb.DTO;
 using ScrumPokerWeb.Services;
 
-
 namespace ScrumPokerWeb.Controllers
 {
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DiscussionResultsController : ControllerBase
+  /// <summary>
+  /// Контроллер результатов обсуждений.
+  /// </summary>
+  [Authorize]
+  [Route("api/[controller]")]
+  [ApiController]
+  public class DiscussionResultsController : ControllerBase
+  {
+    /// <summary>
+    /// Сервис результатов обсуждений.
+    /// </summary>
+    private readonly DiscussionResultService service;
+
+    /// <summary>
+    /// Конструктор контроллера.
+    /// </summary>
+    /// <param name="service">Сервис-синглтон.</param>
+    public DiscussionResultsController(DiscussionResultService service)
     {
-        DiscussionResultService service;
-        private string LoggedUser => User.Identity.Name.ToString();
-
-        public DiscussionResultsController(DiscussionResultService service)
-        {
-            this.service = service;
-        }
-
-        [HttpGet]
-        public IEnumerable<DiscussionResultDto> Get()
-        {
-            return service.GetAll();
-        }
-
-        [HttpGet("own")]
-        public IEnumerable<DiscussionResultDto> GetOwnResults()
-        {
-            return service.GetByName(LoggedUser);
-        }
-
-        [HttpGet("{id}")]
-        public DiscussionResultDto Get(long id)
-        {
-            return service.Get(id);
-        }
-
-        //[HttpPost]
-        //public void Post()
-        //{
-        //    string beginig = Request.Form["beginig"];
-        //    string ending = Request.Form["ending"];
-        //    string theme = Request.Form["theme"];
-        //    string resume = Request.Form["resume"];
-        //    string usersCardsIds = Request.Form["usersCards"];
-        //    service.Create(beginig, ending, theme, resume, usersCardsIds);
-        //}
-
-        //[HttpPut("end/{id}")]
-        //public void EndDiscussion(long id)
-        //{
-        //    service.EndDiscussion(id);
-        //}
-
-        //[HttpPut("addMark/{id}")]
-        //public void AddOrChangeMark(long id)
-        //{
-        //    string cardId = Request.Form["cardId"];
-        //    service.AddOrChangeMark(id, LoggedUser, cardId);
-        //}
+      this.service = service;
     }
+
+    /// <summary>
+    /// Имя залогиненного пользователя.
+    /// </summary>
+    private string LoggedUser => User.Identity.Name;
+
+    /// <summary>
+    /// Показать все результаты обсуждений.
+    /// </summary>
+    /// <returns>Коллекцию результатов обсуждений.</returns>
+    [HttpGet]
+    public IEnumerable<DiscussionResultDto> Get()
+    {
+      return service.GetAll();
+    }
+
+    /// <summary>
+    /// Показать результаты обсуждений текущего пользователя.
+    /// </summary>
+    /// <returns>Коллекцию результатов обсуждений.</returns>
+    [HttpGet("own")]
+    public IEnumerable<DiscussionResultDto> GetOwnResults()
+    {
+      return service.GetByName(LoggedUser);
+    }
+
+    /// <summary>
+    /// Выдаёт результат обсуждения по его ИД.
+    /// </summary>
+    /// <param name="id">ИД результата обсуждения.</param>
+    /// <returns>Объект-отображения результата.</returns>
+    [HttpGet("{id}")]
+    public DiscussionResultDto Get(long id)
+    {
+      return service.Get(id);
+    }
+  }
 }

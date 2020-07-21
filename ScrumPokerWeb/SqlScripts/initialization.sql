@@ -123,3 +123,11 @@ insert into CardsDecks values
 (9, 2)
 
 insert into Users values ('valera'), ('Borya')
+
+insert into Rooms values 
+('', 4, 0 , 1, 2),
+('1', 0, 0 , 2, 1)
+
+insert into UsersInRooms values 
+(1, 1),
+(2, 2)

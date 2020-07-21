@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DataService.Models;
+﻿using DataService.Models;
 using UnitTests.TestData;
 
 namespace UnitTests.TestRepositories
 {
-    public class RoomRepository : BaseRepository<Room>
+  /// <summary>
+  /// Тестовый репозиторий комнат.
+  /// </summary>
+  public class RoomRepository : BaseRepository<Room>
+  {
+    /// <summary>
+    /// Конструктор репозитория с заполнением тестовым данными.
+    /// </summary>
+    public RoomRepository()
     {
-      public RoomRepository()
-      {
-        Rooms testData = new Rooms();
-        this.Create( testData.TestRoom1);
-      }
+      Rooms testData = new Rooms();
+      this.Create(testData.TestRoom1);
     }
+  }
 }

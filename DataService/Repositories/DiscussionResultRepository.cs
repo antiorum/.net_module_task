@@ -2,7 +2,10 @@
 
 namespace DataService.Repositories
 {
-    public class DiscussionResultRepository : BaseRepository<DiscussionResult>
-    {
-    }
+  /// <summary>
+  /// Репозиторий результатов обсуждений.
+  /// </summary>
+  public class DiscussionResultRepository : BaseRepository<DiscussionResult>
+  {
+  }
 }

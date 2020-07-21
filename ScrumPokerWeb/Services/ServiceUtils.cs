@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ScrumPokerWeb.Services
 {
-    public static class ServiceUtils
+  /// <summary>
+  ///   Класс с утилитными методами для сервисов.
+  /// </summary>
+  public static class ServiceUtils
+  {
+    /// <summary>
+    ///   Парсит строку.
+    /// </summary>
+    /// <param name="source">Строка-источник.</param>
+    /// <returns>Коллекцию целых чисел.</returns>
+    public static IEnumerable<long> ParseIds(string source)
     {
-        public static IEnumerable<long> ParseIds(string source)
-        {
-            List<long> result = new List<long>();
-            string[] ids = source.Split(", ");
-            foreach(string id in ids)
-            {
-                result.Add(long.Parse(id));
-            }
-            return result;
-        }
+      var result = new List<long>();
+      var ids = source.Split(", ");
+      foreach (var id in ids) result.Add(long.Parse(id));
+      return result;
     }
+  }
 }

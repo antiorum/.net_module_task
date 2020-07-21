@@ -9,6 +9,17 @@
     &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.RoomServiceTests.Create&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d15d0afc_002D0a7f_002D4428_002D907c_002D8710a2e72186/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.RoomServiceTests.Create&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ea8404b9_002Dd47a_002D487b_002Da2fc_002Ddd63de16b4c1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CardServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.CardServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.DeckServiceTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb87052f_002D8c20_002D4b03_002Db1c6_002D1449c9ea6490/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::16586E16-238E-4A4B-A7B2-D7E89DF8D6A6::.NETCoreApp,Version=v3.1::UnitTests.Services.RoomServiceTests.Create&lt;/TestId&gt;&#xD;

@@ -1,7 +1,6 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DataService;
 using DataService.Models;
 using Microsoft.AspNetCore.SignalR;
@@ -10,53 +9,92 @@ using ScrumPokerWeb.SignalR;
 
 namespace ScrumPokerWeb.Services
 {
-    public class UserService
+  /// <summary>
+  /// Сервис пользователей.
+  /// </summary>
+  public class UserService
+  {
+    private readonly IRepository<User> repository;
+    private readonly ConcurrentDictionary<string, string> userWithSignalRIds;
+    private IHubContext<RoomsHub> context;
+
+    /// <summary>
+    /// Конструктор сервиса.
+    /// </summary>
+    /// <param name="repository">Репозиторий пользователей.</param>
+    /// <param name="context">Контекст сигнал р.</param>
+    public UserService(IRepository<User> repository, IHubContext<RoomsHub> context)
     {
-        private Dictionary<string, string> userWithSignalRIds;
-        IRepository<User> repository;
-        private IHubContext<RoomsHub> context;
-
-        public UserService(IRepository<User> repository, IHubContext<RoomsHub> context)
-        {
-            this.repository = repository;
-            this.context = context;
-            userWithSignalRIds = new Dictionary<string, string>();
-        }
-
-        public User GetByName(string name)
-        {
-            return repository.GetAll().FirstOrDefault(u => u.Name == name);
-        }
-
-        public void Create(User user)
-        {
-            repository.Create(user);
-        }
-
-        public IEnumerable<UserDto> GetAll()
-        {
-            return DtoUtil.GetUsersTOs(repository.GetAll());
-        }
-
-        public void AddUserToConnectionMap(string user, string signalRId)
-        {
-            if (!userWithSignalRIds.ContainsKey(user))
-            {
-                userWithSignalRIds.Add(user, signalRId);
-            }
-        }
-
-        public void DeleteUserFromConnectionMap(string identityName)
-        {
-            userWithSignalRIds.Remove(identityName);
-        }
-
-        public string GetConnectionIdNyName(string username)
-        {
-            return userWithSignalRIds
-                .Where(pair => pair.Key == username)
-                .Select(pair => pair.Value)
-                .FirstOrDefault();
-        }
+      this.repository = repository;
+      this.context = context;
+      this.userWithSignalRIds = new ConcurrentDictionary<string, string>();
     }
+
+    /// <summary>
+    /// Поиск пользователя по имени.
+    /// </summary>
+    /// <param name="name">Имя пользователя.</param>
+    /// <returns>Сущность - пользователя.</returns>
+    public User GetByName(string name)
+    {
+      return this.repository.GetAll().FirstOrDefault(u => u.Name == name);
+    }
+
+    /// <summary>
+    /// Создаёт нового пользователя в репозитории.
+    /// </summary>
+    /// <param name="user">Имя пользователя.</param>
+    public void Create(User user)
+    {
+      this.repository.Create(user);
+    }
+
+    /// <summary>
+    /// Выдает список всех пользователей.
+    /// </summary>
+    /// <returns>Коллекцию ДТО пользователей.</returns>
+    public IEnumerable<UserDto> GetAll()
+    {
+      return DtoUtil.GetUsersDtos(this.repository.GetAll());
+    }
+
+    /// <summary>
+    /// Сохраняет соответсвие пользователя с его соединением сигнал р.
+    /// </summary>
+    /// <param name="user">Имя пользователя.</param>
+    /// <param name="signalRId">Соединение.</param>
+    public void AddUserToConnectionMap(string user, string signalRId)
+    {
+      if (this.userWithSignalRIds.ContainsKey(user))
+      {
+        string oldConnection;
+        this.userWithSignalRIds.TryRemove(user, out oldConnection);
+      }
+
+      this.userWithSignalRIds.TryAdd(user, signalRId);
+    }
+
+    /// <summary>
+    /// Удаляет соответсвие пользователя с его соединением.
+    /// </summary>
+    /// <param name="identityName">Имя пользователя.</param>
+    public void DeleteUserFromConnectionMap(string identityName)
+    {
+      string oldConnection;
+      this.userWithSignalRIds.TryRemove(identityName, out oldConnection);
+    }
+
+    /// <summary>
+    /// Находит Соединение пользователя по его имени.
+    /// </summary>
+    /// <param name="username">Имя пользователя.</param>
+    /// <returns>Строку с соединеием.</returns>
+    public string GetConnectionIdByName(string username)
+    {
+      return this.userWithSignalRIds
+        .Where(pair => pair.Key == username)
+        .Select(pair => pair.Value)
+        .FirstOrDefault();
+    }
+  }
 }

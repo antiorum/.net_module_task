@@ -1,17 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ScrumPokerWeb.DTO
+﻿namespace ScrumPokerWeb.DTO
 {
-    public class BaseDto
+  /// <summary>
+  /// Базовый класс ДТО.
+  /// </summary>
+  public class BaseDto
+  {
+    /// <summary>
+    /// Конструктор.
+    /// </summary>
+    /// <param name="id">ИД ДТО.</param>
+    public BaseDto(long id)
     {
-        public BaseDto(long id)
-        {
-            this.Id = id;
-        }
-
-        public virtual long Id { get; set; }
+      this.Id = id;
     }
+
+    /// <summary>
+    /// ИД ДТО.
+    /// </summary>
+    /// <value>Целочисленный ИД.</value>
+    public virtual long Id { get; set; }
+  }
 }

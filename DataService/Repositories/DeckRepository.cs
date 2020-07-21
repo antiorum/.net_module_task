@@ -2,7 +2,10 @@
 
 namespace DataService.Repositories
 {
-    public class DeckRepository : BaseRepository<Deck>
+  /// <summary>
+  /// Репозиторий колод.
+  /// </summary>
+  public class DeckRepository : BaseRepository<Deck>
     {
     }
 }

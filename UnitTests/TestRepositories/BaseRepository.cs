@@ -1,31 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DataService;
 using DataService.Models;
 
 namespace UnitTests.TestRepositories
 {
+  /// <summary>
+  /// Тестовый базовый репозиторий.
+  /// </summary>
+  /// <typeparam name="T">Сущность, наследуемая от <see cref="BaseEntity"/></typeparam>
   public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
   {
     private static IList<T> innerVault;
 
+    /// <summary>
+    /// Конструктор репозитория.
+    /// </summary>
     protected BaseRepository()
     {
       innerVault = new List<T>();
     }
 
+    /// <summary>
+    /// Все элементы репозитория.
+    /// </summary>
+    /// <returns>Коллекция элементов.</returns>
     public virtual IEnumerable<T> GetAll()
     {
       return innerVault;
     }
 
+    /// <summary>
+    /// Элемент по ИД.
+    /// </summary>
+    /// <param name="id">ИД элемента.</param>
+    /// <returns>Экземпляр Т.</returns>
     public virtual T Get(long id)
     {
       return innerVault.FirstOrDefault(t => t.Id == id);
     }
 
+    /// <summary>
+    /// Создание нового элемента.
+    /// </summary>
+    /// <param name="item">Экземпляр Т, который будет сохранен.</param>
     public virtual void Create(T item)
     {
       if (item.Id == 0)
@@ -35,15 +53,23 @@ namespace UnitTests.TestRepositories
       innerVault.Add(item);
     }
 
+    /// <summary>
+    /// Изменение элмента.
+    /// </summary>
+    /// <param name="item">Экземпляр Т, который будет изменен.</param>
     public virtual void Update(T item)
     {
-      Delete(item.Id);
-      Create(item);
+      this.Delete(item.Id);
+      this.Create(item);
     }
 
+    /// <summary>
+    /// Удалить элемент.
+    /// </summary>
+    /// <param name="id">ИД элемента.</param>
     public virtual void Delete(long id)
     {
-      innerVault.Remove(Get(id));
+      innerVault.Remove(this.Get(id));
     }
   }
 }

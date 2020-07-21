@@ -2,7 +2,10 @@
 
 namespace DataService.Repositories
 {
-    public class RoomRepository : BaseRepository<Room>
-    {
-    }
+  /// <summary>
+  /// Репозиторий комнат.
+  /// </summary>
+  public class RoomRepository : BaseRepository<Room>
+  {
+  }
 }

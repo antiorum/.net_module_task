@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DataService;
 using DataService.Models;
@@ -11,14 +10,25 @@ using ScrumPokerWeb.SignalR;
 
 namespace ScrumPokerWeb.Services
 {
+  /// <summary>
+  /// Сервис колод.
+  /// </summary>
   public class DeckService
   {
-    IRepository<Deck> deckRepo;
-    IRepository<Card> cardRepo;
-    private IHubContext<RoomsHub> context;
-    private UserService service;
+    private readonly IRepository<Card> cardRepo;
+    private readonly IHubContext<RoomsHub> context;
+    private readonly IRepository<Deck> deckRepo;
+    private readonly UserService service;
 
-    public DeckService(IRepository<Deck> deckRepo, IRepository<Card> cardRepo, IHubContext<RoomsHub> context, UserService service)
+    /// <summary>
+    /// Конструктор сервиса.
+    /// </summary>
+    /// <param name="deckRepo">Репозиторий колод.</param>
+    /// <param name="cardRepo">Репозиторий карт.</param>
+    /// <param name="context">Контекст сигнал р.</param>
+    /// <param name="service">Сервия пользователей.</param>
+    public DeckService(IRepository<Deck> deckRepo, IRepository<Card> cardRepo, IHubContext<RoomsHub> context,
+      UserService service)
     {
       this.deckRepo = deckRepo;
       this.cardRepo = cardRepo;
@@ -26,92 +36,114 @@ namespace ScrumPokerWeb.Services
       this.service = service;
     }
 
+    /// <summary>
+    /// Удалить колоду.
+    /// </summary>
+    /// <param name="id">ИД колоды.</param>
+    /// <param name="whoWantToDelete">Пользователь, удаляющий колоду.</param>
     public void Delete(long id, string whoWantToDelete)
     {
-      Deck deck = deckRepo.Get(id);
+      var deck = this.deckRepo.Get(id);
       if (whoWantToDelete == deck.Owner)
-      {
-        deckRepo.Delete(id);
-      }
+        this.deckRepo.Delete(id);
       else
-      {
         throw new AccessViolationException("Вы не можете удалять чужие колоды!");
-      }
-      UpdateClientDecks(whoWantToDelete).Wait();
+      this.UpdateClientDecks(whoWantToDelete).Wait();
     }
 
+    /// <summary>
+    /// Изменить колоду.
+    /// </summary>
+    /// <param name="id">ИД колоды.</param>
+    /// <param name="whoWantToUpdate">Пользователь, изменяющий колоду.</param>
+    /// <param name="name">Новое название.</param>
+    /// <param name="cardsIds">Новый список карт.</param>
     public void Update(long id, string whoWantToUpdate, string name, string cardsIds)
     {
-      Deck oldDeck = deckRepo.Get(id);
+      var oldDeck = this.deckRepo.Get(id);
       if (whoWantToUpdate == oldDeck.Owner)
       {
         oldDeck.Name = name ?? oldDeck.Name;
-        
-        foreach (Card c in oldDeck.Cards)
+
+        foreach (var c in oldDeck.Cards)
         {
           c.Decks.Remove(oldDeck);
-          cardRepo.Update(c);
+          this.cardRepo.Update(c);
         }
 
         ISet<Card> newCards = new HashSet<Card>();
-        foreach (long cardId in ServiceUtils.ParseIds(cardsIds))
+        foreach (var cardId in ServiceUtils.ParseIds(cardsIds))
         {
-          Card card = cardRepo.Get(cardId);
+          var card = this.cardRepo.Get(cardId);
           newCards.Add(card);
           card.Decks.Add(oldDeck);
-          cardRepo.Update(card);
+          this.cardRepo.Update(card);
         }
 
         oldDeck.Cards = newCards;
-        deckRepo.Update(oldDeck);
+        this.deckRepo.Update(oldDeck);
       }
       else
       {
         throw new AccessViolationException("Вы не можете изменять чужие колоды!");
       }
-      UpdateClientDecks(whoWantToUpdate).Wait();
+
+      this.UpdateClientDecks(whoWantToUpdate).Wait();
     }
 
+    /// <summary>
+    /// Создает новую колоду.
+    /// </summary>
+    /// <param name="owner">Владелец колоды.</param>
+    /// <param name="name">Название колоды.</param>
+    /// <param name="cardsIds">Список карт.</param>
     public void Create(string owner, string name, string cardsIds)
     {
-      Deck newDeck = new Deck();
+      var newDeck = new Deck();
       newDeck.Name = name;
       newDeck.Owner = owner;
-      deckRepo.Create(newDeck);
+      this.deckRepo.Create(newDeck);
 
-
-      foreach (long id in ServiceUtils.ParseIds(cardsIds))
+      foreach (var id in ServiceUtils.ParseIds(cardsIds))
       {
-        Card card = cardRepo.Get(id);
+        var card = this.cardRepo.Get(id);
         card.Decks.Add(newDeck);
-        cardRepo.Update(card);
+        this.cardRepo.Update(card);
         newDeck.Cards.Add(card);
       }
-      deckRepo.Update(newDeck);
 
-      UpdateClientDecks(owner).Wait();
+      this.deckRepo.Update(newDeck);
+
+      this.UpdateClientDecks(owner).Wait();
     }
 
+    /// <summary>
+    /// Находит колоду по ИД.
+    /// </summary>
+    /// <param name="id">ИД колоды.</param>
+    /// <returns>ДТО колоды.</returns>
     public DeckDto Get(long id)
     {
-      return DtoUtil.GetDeckTO(deckRepo.Get(id));
+      return DtoUtil.GetDeckDto(this.deckRepo.Get(id));
     }
 
+    /// <summary>
+    /// Находит доступные колоды.
+    /// </summary>
+    /// <param name="owner">Владелец колод.</param>
+    /// <returns>Коллекцию ДТО колод.</returns>
     public IEnumerable<DeckDto> GetAvailable(string owner)
     {
-      List<Deck> decks = deckRepo.GetAll().Where(d => d.Owner == null).ToList();
-      if (owner != null)
-      {
-        decks.AddRange(deckRepo.GetAll().Where(d => d.Owner == owner));
-      }
-      return DtoUtil.GetDecksTOs(decks);
+      var decks = this.deckRepo.GetAll().Where(d => d.Owner == null).ToList();
+      if (owner != null) decks.AddRange(this.deckRepo.GetAll().Where(d => d.Owner == owner));
+      return DtoUtil.GetDecksDtos(decks);
     }
 
     private async Task UpdateClientDecks(string name)
     {
-      await context.Clients
-          .Client(service.GetConnectionIdNyName(name))
-          .SendAsync("UpdateDecks");
+      await this.context.Clients
+        .Client(this.service.GetConnectionIdByName(name))
+        .SendAsync("UpdateDecks");
     }
   }
 }

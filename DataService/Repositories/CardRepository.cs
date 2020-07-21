@@ -2,7 +2,10 @@
 
 namespace DataService.Repositories
 {
-    public class CardRepository : BaseRepository<Card>
-    {
-    }
+  /// <summary>
+  /// Репозиторий карт.
+  /// </summary>
+  public class CardRepository : BaseRepository<Card>
+  {
+  }
 }

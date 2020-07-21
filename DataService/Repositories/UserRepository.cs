@@ -2,7 +2,10 @@
 
 namespace DataService.Repositories
 {
-    public class UserRepository : BaseRepository<User>
-    {
-    }
+  /// <summary>
+  /// Репозиторий пользователей.
+  /// </summary>
+  public class UserRepository : BaseRepository<User>
+  {
+  }
 }

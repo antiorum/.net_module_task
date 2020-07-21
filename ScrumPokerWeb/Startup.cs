@@ -1,4 +1,3 @@
-using System;
 using DataService;
 using DataService.Models;
 using DataService.Repositories;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,16 +14,30 @@ using ScrumPokerWeb.SignalR;
 
 namespace ScrumPokerWeb
 {
+  /// <summary>
+  /// Конфигурация веб-приложения.
+  /// </summary>
   public class Startup
   {
+    /// <summary>
+    /// Конструктор класса.
+    /// </summary>
+    /// <param name="configuration">Объект интерфейса конфигурации.</param>
     public Startup(IConfiguration configuration)
     {
-      Configuration = configuration;
+      this.Configuration = configuration;
     }
 
+    /// <summary>
+    /// Объект интерфейса конфигурации.
+    /// </summary>
+    /// <value>Реализация интерфейса.</value>
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
+    /// <summary>
+    /// Конигурация сервисов.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
@@ -41,54 +53,50 @@ namespace ScrumPokerWeb
       services.AddSingleton(typeof(UserService));
 
       services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-          .AddCookie(options =>
+        .AddCookie(options =>
+        {
+          options.LoginPath = new PathString("/api/users/auth");
+          options.Cookie = new CookieBuilder
           {
-            options.LoginPath = new PathString("/api/users/auth");
-            options.Cookie = new CookieBuilder
-            {
-              HttpOnly = false,
-              Path = "/",
-              SameSite = SameSiteMode.Lax,
-              SecurePolicy = CookieSecurePolicy.None
-            };
-            options.SlidingExpiration = true;
-          });
+            HttpOnly = false,
+            Path = "/",
+            SameSite = SameSiteMode.Lax,
+            SecurePolicy = CookieSecurePolicy.None
+          };
+          options.SlidingExpiration = true;
+        });
 
       services.AddAuthorization();
-      services.AddSignalR(r =>
-      {
-        r.MaximumReceiveMessageSize = 102400000;
-      });
+      services.AddSignalR(r => { r.MaximumReceiveMessageSize = 102400000; });
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    /// <summary>
+    /// Конфигурация HTTP.
+    /// </summary>
+    /// <param name="app">Интерфейс билдера.</param>
+    /// <param name="env">Интерфейс среды.</param>
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
+      if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
       app.UseHttpsRedirection();
 
       app.UseRouting();
 
       app.UseCors(x => x
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .SetIsOriginAllowed(origin => true)
-          .AllowCredentials());
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .SetIsOriginAllowed(origin => true)
+        .AllowCredentials());
 
       app.UseAuthentication();
 
       app.UseAuthorization();
 
-
       app.UseCookiePolicy(new CookiePolicyOptions
       {
-        //MinimumSameSitePolicy = SameSiteMode.Lax,
         HttpOnly = HttpOnlyPolicy.None,
-        Secure = CookieSecurePolicy.None,
+        Secure = CookieSecurePolicy.None
       });
 
       app.UseEndpoints(endpoints =>

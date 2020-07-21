@@ -1,17 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using DataService.Models;
-using NHibernate;
 
 namespace DataService
 {
-    public interface IRepository<T> where T : BaseEntity
-    {
-        IEnumerable<T> GetAll();
-        T Get(long id);
-        void Create(T item);
-        void Update(T item);
-        void Delete(long id);        
-    }
+  /// <summary>
+  /// Интерфейс репозитория.
+  /// </summary>
+  /// <typeparam name="T">Хранящиеся сущности должны быть унаследованы от <see cref="BaseEntity"/>.</typeparam>
+  public interface IRepository<T> where T : BaseEntity
+  {
+    /// <summary>
+    /// Выбрать все элементы.
+    /// </summary>
+    /// <returns>Коллекцию элементов.</returns>
+    IEnumerable<T> GetAll();
+
+    /// <summary>
+    /// Выбрать элемент по идентификатору.
+    /// </summary>
+    /// <param name="id">Целочисленный ИД.</param>
+    /// <returns>Элемент типа Т.</returns>
+    T Get(long id);
+
+    /// <summary>
+    /// Сохранить в базе элемент Т.
+    /// </summary>
+    /// <param name="item">Объект сохранения.</param>
+    void Create(T item);
+
+    /// <summary>
+    /// Изменить элемент.
+    /// </summary>
+    /// <param name="item">Элемент, который заместит предыдущий.</param>
+    void Update(T item);
+
+    /// <summary>
+    /// Удалить элемент из базы.
+    /// </summary>
+    /// <param name="id">ИД элемента.</param>
+    void Delete(long id);
+  }
 }
