@@ -3,7 +3,7 @@
   /// <summary>
   /// Класс базовой сущности.
   /// </summary>
-  public class BaseEntity
+  public abstract class BaseEntity
   {
     /// <summary>
     /// Получает или задает идентификатор сущности.
