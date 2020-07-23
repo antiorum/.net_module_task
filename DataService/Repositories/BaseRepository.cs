@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
 using DataService.Models;
-using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
-using NHibernate;
-using NHibernate.Cfg;
 
 namespace DataService.Repositories
 {
@@ -14,53 +10,14 @@ namespace DataService.Repositories
   public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
   {
     /// <summary>
-    /// Конфигурация NHibernate.
-    /// </summary>
-    protected static Configuration configuration;
-
-    /// <summary>
-    /// Фабрика сессий NHibernate.
-    /// </summary>
-    protected static ISessionFactory factory;
-
-    /// <summary>
-    /// Сессия NHibernate.
-    /// </summary>
-    protected static ISession session;
-
-    /// <summary>
-    /// Статический конструктор с конфигурацией.
-    /// </summary>
-    static BaseRepository()
-    {
-      configuration = Fluently.Configure().Database(
-              MsSqlConfiguration
-                  .MsSql2008
-                  .ShowSql()
-                  .ConnectionString("MultipleActiveResultSets=False; Data Source=.\\SQLEXPRESS; Initial Catalog=PokerDB; Integrated Security=True")
-                  .UseReflectionOptimizer())
-          .Mappings(m => m.FluentMappings.AddFromAssemblyOf<CardMap>())
-          .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DeckMap>())
-          .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DiscussionResultMap>())
-          .Mappings(m => m.FluentMappings.AddFromAssemblyOf<UserMap>())
-          .Mappings(m => m.FluentMappings.AddFromAssemblyOf<UserCardMap>())
-          .Mappings(m => m.FluentMappings.AddFromAssemblyOf<RoomMap>())
-          .BuildConfiguration();
-
-      // new SchemaExport(configuration).Create(true, true);
-      factory = configuration.BuildSessionFactory();
-      session = factory.OpenSession();
-    }
-
-    /// <summary>
     /// Выбрать все элементы из базы данных.
     /// </summary>
     /// <returns>Типизированная коллекция.</returns>
     public IEnumerable<T> GetAll()
     {
-      using (session.BeginTransaction())
+      using (NHibernateConfig.GetConfig.Session.BeginTransaction())
       {
-        return session.QueryOver<T>().Fetch(a => a).Eager.List();
+        return NHibernateConfig.GetConfig.Session.QueryOver<T>().Fetch(a => a).Eager.List();
       }
     }
 
@@ -71,9 +28,9 @@ namespace DataService.Repositories
     /// <returns>Элемент типа Т.</returns>
     public T Get(long id)
     {
-      using (session.BeginTransaction())
+      using (NHibernateConfig.GetConfig.Session.BeginTransaction())
       {
-        return session.Get<T>(id);
+        return NHibernateConfig.GetConfig.Session.Get<T>(id);
       }
     }
 
@@ -83,10 +40,10 @@ namespace DataService.Repositories
     /// <param name="item">Объект сохранения.</param>
     public void Create(T item)
     {
-      using (session.BeginTransaction())
+      using (NHibernateConfig.GetConfig.Session.BeginTransaction())
       {
-        session.Save(item);
-        session.Transaction.Commit();
+        NHibernateConfig.GetConfig.Session.Save(item);
+        NHibernateConfig.GetConfig.Session.Transaction.Commit();
       }
     }
 
@@ -96,10 +53,10 @@ namespace DataService.Repositories
     /// <param name="item">Элемент, который заместит предыдущий.</param>
     public void Update(T item)
     {
-      using (session.BeginTransaction())
+      using (NHibernateConfig.GetConfig.Session.BeginTransaction())
       {
-        session.Merge(item);
-        session.Transaction.Commit();
+        NHibernateConfig.GetConfig.Session.Merge(item);
+        NHibernateConfig.GetConfig.Session.Transaction.Commit();
       }
     }
 
@@ -109,10 +66,10 @@ namespace DataService.Repositories
     /// <param name="id">ИД элемента.</param>
     public void Delete(long id)
     {
-      using (session.BeginTransaction())
+      using (NHibernateConfig.GetConfig.Session.BeginTransaction())
       {
-        session.Delete(session.Get<T>(id));
-        session.Transaction.Commit();
+        NHibernateConfig.GetConfig.Session.Delete(NHibernateConfig.GetConfig.Session.Get<T>(id));
+        NHibernateConfig.GetConfig.Session.Transaction.Commit();
       }
     }
   }
