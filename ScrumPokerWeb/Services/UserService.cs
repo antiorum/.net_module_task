@@ -65,8 +65,7 @@ namespace ScrumPokerWeb.Services
     {
       if (this.userWithSignalRIds.ContainsKey(user))
       {
-        string oldConnection;
-        this.userWithSignalRIds.TryRemove(user, out oldConnection);
+        this.userWithSignalRIds.TryRemove(user, out _);
       }
 
       this.userWithSignalRIds.TryAdd(user, signalRId);
@@ -78,8 +77,7 @@ namespace ScrumPokerWeb.Services
     /// <param name="identityName">Имя пользователя.</param>
     public void DeleteUserFromConnectionMap(string identityName)
     {
-      string oldConnection;
-      this.userWithSignalRIds.TryRemove(identityName, out oldConnection);
+      this.userWithSignalRIds.TryRemove(identityName, out _);
     }
 
     /// <summary>
