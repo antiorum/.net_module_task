@@ -38,7 +38,7 @@ namespace DataService.Repositories
     /// Сохранить в базе элемент Т.
     /// </summary>
     /// <param name="item">Объект сохранения.</param>
-    public void Create(T item)
+    public void Save(T item)
     {
       using (NHibernateConfig.GetConfig.Session.BeginTransaction())
       {

@@ -44,7 +44,7 @@ namespace UnitTests.TestRepositories
     /// Создание нового элемента.
     /// </summary>
     /// <param name="item">Экземпляр Т, который будет сохранен.</param>
-    public virtual void Create(T item)
+    public virtual void Save(T item)
     {
       if (item.Id == 0)
       {
@@ -60,7 +60,7 @@ namespace UnitTests.TestRepositories
     public virtual void Update(T item)
     {
       this.Delete(item.Id);
-      this.Create(item);
+      this.Save(item);
     }
 
     /// <summary>

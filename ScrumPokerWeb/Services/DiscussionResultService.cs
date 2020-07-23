@@ -59,7 +59,7 @@ namespace ScrumPokerWeb.Services
       var result = new DiscussionResult();
       result.Beginning = DateTime.Now;
       result.Theme = theme;
-      this.resultRepository.Create(result);
+      this.resultRepository.Save(result);
       return result.Id;
     }
 
@@ -111,23 +111,20 @@ namespace ScrumPokerWeb.Services
     public void AddOrChangeMark(long id, string loggedUser, string cardId)
     {
       var result = this.resultRepository.Get(id);
-      if (result.Ending == DateTime.MinValue)
-      {
-        var user = this.userRepository.GetAll().FirstOrDefault(u => u.Name == loggedUser);
-        var card = this.cardRepository.Get(long.Parse(cardId));
-        var userCard = new UserCard();
-        userCard.User = user;
-        userCard.Card = card;
-        userCard.DiscussionResult = result;
-        if (result.UsersCards.Count(uc => userCard.User.Equals(user)) > 0)
-          result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
-        result.UsersCards.Add(userCard);
-        this.resultRepository.Update(result);
-      }
-      else
+      if (result.Ending != DateTime.MinValue)
       {
         throw new AccessViolationException("Нельзя добавлять оценки в законченное обсуждение");
       }
+      var user = this.userRepository.GetAll().FirstOrDefault(u => u.Name == loggedUser);
+      var card = this.cardRepository.Get(long.Parse(cardId));
+      var userCard = new UserCard();
+      userCard.User = user;
+      userCard.Card = card;
+      userCard.DiscussionResult = result;
+      if (result.UsersCards.Count(uc => userCard.User.Equals(user)) > 0)
+        result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
+      result.UsersCards.Add(userCard);
+      this.resultRepository.Update(result);
     }
   }
 }

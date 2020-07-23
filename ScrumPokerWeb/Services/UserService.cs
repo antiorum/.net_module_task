@@ -44,7 +44,7 @@ namespace ScrumPokerWeb.Services
     /// <param name="user">Имя пользователя.</param>
     public void Create(User user)
     {
-      this.repository.Create(user);
+      this.repository.Save(user);
     }
 
     /// <summary>

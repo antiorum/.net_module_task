@@ -14,7 +14,7 @@ namespace UnitTests.TestRepositories
     public RoomRepository()
     {
       Rooms testData = new Rooms();
-      this.Create(testData.TestRoom1);
+      this.Save(testData.TestRoom1);
     }
   }
 }

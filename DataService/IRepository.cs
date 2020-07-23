@@ -26,7 +26,7 @@ namespace DataService
     /// Сохранить в базе элемент Т.
     /// </summary>
     /// <param name="item">Объект сохранения.</param>
-    void Create(T item);
+    void Save(T item);
 
     /// <summary>
     /// Изменить элемент.

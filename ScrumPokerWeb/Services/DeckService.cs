@@ -44,10 +44,10 @@ namespace ScrumPokerWeb.Services
     public void Delete(long id, string whoWantToDelete)
     {
       var deck = this.deckRepo.Get(id);
-      if (whoWantToDelete == deck.Owner)
-        this.deckRepo.Delete(id);
-      else
+      if (whoWantToDelete != deck.Owner)
         throw new AccessViolationException("Вы не можете удалять чужие колоды!");
+      this.deckRepo.Delete(id);
+        
       this.UpdateClientDecks(whoWantToDelete).Wait();
     }
 
@@ -61,32 +61,29 @@ namespace ScrumPokerWeb.Services
     public void Update(long id, string whoWantToUpdate, string name, string cardsIds)
     {
       var oldDeck = this.deckRepo.Get(id);
-      if (whoWantToUpdate == oldDeck.Owner)
-      {
-        oldDeck.Name = name ?? oldDeck.Name;
-
-        foreach (var c in oldDeck.Cards)
-        {
-          c.Decks.Remove(oldDeck);
-          this.cardRepo.Update(c);
-        }
-
-        ISet<Card> newCards = new HashSet<Card>();
-        foreach (var cardId in ServiceUtils.ParseIds(cardsIds))
-        {
-          var card = this.cardRepo.Get(cardId);
-          newCards.Add(card);
-          card.Decks.Add(oldDeck);
-          this.cardRepo.Update(card);
-        }
-
-        oldDeck.Cards = newCards;
-        this.deckRepo.Update(oldDeck);
-      }
-      else
+      if (whoWantToUpdate != oldDeck.Owner)
       {
         throw new AccessViolationException("Вы не можете изменять чужие колоды!");
       }
+      oldDeck.Name = name ?? oldDeck.Name;
+
+      foreach (var c in oldDeck.Cards)
+      {
+        c.Decks.Remove(oldDeck);
+        this.cardRepo.Update(c);
+      }
+
+      ISet<Card> newCards = new HashSet<Card>();
+      foreach (var cardId in ServiceUtils.ParseIds(cardsIds))
+      {
+        var card = this.cardRepo.Get(cardId);
+        newCards.Add(card);
+        card.Decks.Add(oldDeck);
+        this.cardRepo.Update(card);
+      }
+
+      oldDeck.Cards = newCards;
+      this.deckRepo.Update(oldDeck);
 
       this.UpdateClientDecks(whoWantToUpdate).Wait();
     }
@@ -102,7 +99,7 @@ namespace ScrumPokerWeb.Services
       var newDeck = new Deck();
       newDeck.Name = name;
       newDeck.Owner = owner;
-      this.deckRepo.Create(newDeck);
+      this.deckRepo.Save(newDeck);
 
       foreach (var id in ServiceUtils.ParseIds(cardsIds))
       {

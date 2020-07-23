@@ -14,8 +14,8 @@ namespace UnitTests.TestRepositories
     public DeckRepository()
     {
       Decks decks = new Decks();
-      this.Create(decks.BaseDeck);
-      this.Create(decks.PrivateDeck);
+      this.Save(decks.BaseDeck);
+      this.Save(decks.PrivateDeck);
     }
   }
 }

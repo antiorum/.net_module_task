@@ -14,12 +14,12 @@ namespace UnitTests.TestRepositories
     public CardRepository()
     {
       Cards cards = new Cards();
-      this.Create(cards.CardOne);
-      this.Create(cards.CardFive);
-      this.Create(cards.CardSeven);
-      this.Create(cards.CardEight);
-      this.Create(cards.CardCoffee);
-      this.Create(cards.CardTen);
+      this.Save(cards.CardOne);
+      this.Save(cards.CardFive);
+      this.Save(cards.CardSeven);
+      this.Save(cards.CardEight);
+      this.Save(cards.CardCoffee);
+      this.Save(cards.CardTen);
     }
   }
 }

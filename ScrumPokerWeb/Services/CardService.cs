@@ -64,7 +64,7 @@ namespace ScrumPokerWeb.Services
     /// <param name="user">Имя пользователя.</param>
     public void Save(Card card, string user)
     {
-      this.repository.Create(card);
+      this.repository.Save(card);
       this.UpdateClientCards(user).Wait();
     }
 
@@ -76,14 +76,12 @@ namespace ScrumPokerWeb.Services
     public void Delete(long id, string whoWantDelete)
     {
       Card card = this.repository.Get(id);
-      if (card.Owner == whoWantDelete)
-      {
-        this.repository.Delete(id);
-      }
-      else
+      if (card.Owner != whoWantDelete)
       {
         throw new AccessViolationException("Вы не можете удалять чужие карты!");
+        
       }
+      this.repository.Delete(id);
       this.UpdateClientCards(whoWantDelete).Wait();
     }
 

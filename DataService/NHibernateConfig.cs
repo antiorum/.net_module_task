@@ -43,7 +43,7 @@ namespace DataService
         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<RoomMap>())
         .BuildConfiguration();
 
-      // new SchemaExport(configuration).Create(true, true);
+      // new SchemaExport(configuration).Save(true, true);
       this.factory = this.configuration.BuildSessionFactory();
       this.Session = this.factory.OpenSession();
     }

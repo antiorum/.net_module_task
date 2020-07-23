@@ -14,9 +14,9 @@ namespace UnitTests.TestRepositories
     public UserRepository()
     {
       Users users = new Users();
-      this.Create(users.JohnUser);
-      this.Create(users.ValeraUser);
-      this.Create(users.BorkaUser);
+      this.Save(users.JohnUser);
+      this.Save(users.ValeraUser);
+      this.Save(users.BorkaUser);
     }
   }
 }

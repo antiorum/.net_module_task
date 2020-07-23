@@ -14,8 +14,8 @@ namespace UnitTests.TestRepositories
     public DiscussionResultRepository()
     {
       DiscussionResults results = new DiscussionResults();
-      this.Create(results.TestDiscussionResult1);
-      this.Create(results.TestDiscussionResult2);
+      this.Save(results.TestDiscussionResult1);
+      this.Save(results.TestDiscussionResult2);
     }
   }
 }
