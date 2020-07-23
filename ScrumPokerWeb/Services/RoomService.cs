@@ -53,7 +53,7 @@ namespace ScrumPokerWeb.Services
     /// <returns>Коллекцию ДТО комнат.</returns>
     public IEnumerable<RoomDto> GetAll()
     {
-      return DtoUtil.GetRoomsDtos(this.roomRepository.GetAll());
+      return DtoConverters.GetRoomsDtos(this.roomRepository.GetAll());
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace ScrumPokerWeb.Services
       {
         this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
         this.SendUpdateRoomToClients(room.Id).Wait();
-        return DtoUtil.GetRoomDto(room);
+        return DtoConverters.GetRoomDto(room);
       }
 
       throw new AccessViolationException("Сначала нужно войти в комнату");
@@ -111,7 +111,7 @@ namespace ScrumPokerWeb.Services
         if (!room.Users.Contains(user)) this.AddUserToRoom(user, room);
         this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
         this.SendUpdateRoomToClients(room.Id).Wait();
-        return DtoUtil.GetRoomDto(this.roomRepository.Get(room.Id));
+        return DtoConverters.GetRoomDto(this.roomRepository.Get(room.Id));
       }
 
       throw new AccessViolationException("Неверный пароль к комнате");

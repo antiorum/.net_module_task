@@ -120,7 +120,7 @@ namespace UnitTests.Services
       var actualMethod = InvokedSignalRMethod;
       Assert.AreEqual(expectedMethod, actualMethod);
 
-      var expected = DtoUtil.GetRoomDto(rooms.RoomToInsert);
+      var expected = DtoConverters.GetRoomDto(rooms.RoomToInsert);
       var actual = roomService.Get(2, TestOwner);
       Assert.AreEqual(expected, actual);
     }
@@ -229,7 +229,7 @@ namespace UnitTests.Services
     [Test]
     public void Get()
     {
-      var expected = DtoUtil.GetRoomDto(rooms.TestRoom1);
+      var expected = DtoConverters.GetRoomDto(rooms.TestRoom1);
       var actual = roomService.Get(1, TestOwner);
       Assert.AreEqual(expected, actual);
     }
@@ -240,7 +240,7 @@ namespace UnitTests.Services
     [Test]
     public void GetAll()
     {
-      var expected = DtoUtil.GetRoomsDtos(new List<Room> { rooms.TestRoom1 });
+      var expected = DtoConverters.GetRoomsDtos(new List<Room> { rooms.TestRoom1 });
       var actual = roomService.GetAll();
       Assert.AreEqual(expected, actual);
     }

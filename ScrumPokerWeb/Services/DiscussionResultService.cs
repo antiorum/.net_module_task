@@ -37,7 +37,7 @@ namespace ScrumPokerWeb.Services
     /// <returns>ДТО результата.</returns>
     public DiscussionResultDto Get(long id)
     {
-      return DtoUtil.GetDiscussionResultDto(this.resultRepository.Get(id));
+      return DtoConverters.GetDiscussionResultDto(this.resultRepository.Get(id));
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ namespace ScrumPokerWeb.Services
     /// <returns>Коллекцию ДТО результатов.</returns>
     public IEnumerable<DiscussionResultDto> GetAll()
     {
-      return DtoUtil.GetDiscussionResultsDtos(this.resultRepository.GetAll());
+      return DtoConverters.GetDiscussionResultsDtos(this.resultRepository.GetAll());
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace ScrumPokerWeb.Services
     {
       var discussionResults = this.resultRepository.GetAll()
         .Where(dr => dr.UsersCards.Where(uc => uc.User.Name == owner).ToArray().Length > 0);
-      return DtoUtil.GetDiscussionResultsDtos(discussionResults);
+      return DtoConverters.GetDiscussionResultsDtos(discussionResults);
     }
 
     /// <summary>

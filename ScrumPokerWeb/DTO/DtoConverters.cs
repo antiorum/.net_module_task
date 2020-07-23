@@ -7,7 +7,7 @@ namespace ScrumPokerWeb.DTO
   /// <summary>
   /// Содержит утилитные методы для ДТО.
   /// </summary>
-  public static class DtoUtil
+  public static class DtoConverters
   {
     /// <summary>
     /// Создаёт отображение из карты.

@@ -46,7 +46,7 @@ namespace UnitTests.Services
     public void GetAvailableOnlyCommon()
     {
       var actual = cardService.GetAvailable(null);
-      var expected = DtoUtil.GetCardsDtos(new List<Card> { cards.CardOne, cards.CardFive, cards.CardSeven, cards.CardCoffee });
+      var expected = DtoConverters.GetCardsDtos(new List<Card> { cards.CardOne, cards.CardFive, cards.CardSeven, cards.CardCoffee });
       Assert.AreEqual(expected, actual);
     }
 
@@ -57,7 +57,7 @@ namespace UnitTests.Services
     public void GetAvailableWithPrivate()
     {
       var actual = cardService.GetAvailable(TestOwner);
-      var expected = DtoUtil.GetCardsDtos(new List<Card> { cards.CardOne, cards.CardFive, cards.CardSeven, cards.CardCoffee, cards.CardEight, cards.CardTen });
+      var expected = DtoConverters.GetCardsDtos(new List<Card> { cards.CardOne, cards.CardFive, cards.CardSeven, cards.CardCoffee, cards.CardEight, cards.CardTen });
       Assert.AreEqual(expected, actual);
     }
 
@@ -68,7 +68,7 @@ namespace UnitTests.Services
     public void GetById()
     {
       var actual = cardService.Get(1);
-      var expected = DtoUtil.GetCardDto(cards.CardOne);
+      var expected = DtoConverters.GetCardDto(cards.CardOne);
       Assert.AreEqual(expected, actual);
     }
 
@@ -79,7 +79,7 @@ namespace UnitTests.Services
     public void Save()
     {
       cardService.Save(cards.CardTwo, TestOwner);
-      var expected = DtoUtil.GetCardDto(cards.CardTwo);
+      var expected = DtoConverters.GetCardDto(cards.CardTwo);
       var actual = cardService.Get(7);
 
       var expectedMethod = "UpdateCards";

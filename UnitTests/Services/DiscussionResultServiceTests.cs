@@ -70,7 +70,7 @@ namespace UnitTests.Services
     public void Get()
     {
       var actual = discussionResultService.Get(1);
-      var expected = DtoUtil.GetDiscussionResultDto(discussionResults.TestDiscussionResult1);
+      var expected = DtoConverters.GetDiscussionResultDto(discussionResults.TestDiscussionResult1);
       Assert.AreEqual(expected, actual);
     }
 
@@ -80,7 +80,7 @@ namespace UnitTests.Services
     [Test]
     public void GetAll()
     {
-      var expected = DtoUtil.GetDiscussionResultsDtos(new List<DiscussionResult> { discussionResults.TestDiscussionResult1, discussionResults.TestDiscussionResult2 });
+      var expected = DtoConverters.GetDiscussionResultsDtos(new List<DiscussionResult> { discussionResults.TestDiscussionResult1, discussionResults.TestDiscussionResult2 });
       var actual = discussionResultService.GetAll();
       Assert.AreEqual(expected, actual);
     }
@@ -91,7 +91,7 @@ namespace UnitTests.Services
     [Test]
     public void GetByName()
     {
-      var expected = DtoUtil.GetDiscussionResultsDtos(new List<DiscussionResult> { discussionResults.TestDiscussionResult1, discussionResults.TestDiscussionResult2 });
+      var expected = DtoConverters.GetDiscussionResultsDtos(new List<DiscussionResult> { discussionResults.TestDiscussionResult1, discussionResults.TestDiscussionResult2 });
       var actual = discussionResultService.GetByName(TestOwner);
       Assert.AreEqual(expected, actual);
     }

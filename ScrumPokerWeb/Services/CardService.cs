@@ -44,7 +44,7 @@ namespace ScrumPokerWeb.Services
       {
         cards.AddRange(this.repository.GetAll().Where(c => c.Owner == owner).ToList());
       }
-      return DtoUtil.GetCardsDtos(cards);
+      return DtoConverters.GetCardsDtos(cards);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace ScrumPokerWeb.Services
     /// <returns>ДТО карты.</returns>
     public CardDto Get(long id)
     {
-      return DtoUtil.GetCardDto(this.repository.Get(id));
+      return DtoConverters.GetCardDto(this.repository.Get(id));
     }
 
     /// <summary>

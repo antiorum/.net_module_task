@@ -52,7 +52,7 @@ namespace UnitTests.Services
     [Test]
     public void GetAll()
     {
-      var expected = DtoUtil.GetUsersDtos(new List<User> { users.JohnUser, users.ValeraUser, users.BorkaUser });
+      var expected = DtoConverters.GetUsersDtos(new List<User> { users.JohnUser, users.ValeraUser, users.BorkaUser });
       var actual = userService.GetAll();
       Assert.AreEqual(expected, actual);
     }

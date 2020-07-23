@@ -53,7 +53,7 @@ namespace ScrumPokerWeb.Services
     /// <returns>Коллекцию ДТО пользователей.</returns>
     public IEnumerable<UserDto> GetAll()
     {
-      return DtoUtil.GetUsersDtos(this.repository.GetAll());
+      return DtoConverters.GetUsersDtos(this.repository.GetAll());
     }
 
     /// <summary>

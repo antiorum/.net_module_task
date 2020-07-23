@@ -65,7 +65,7 @@ namespace UnitTests.Services
     [Test]
     public void Get()
     {
-      var expected = DtoUtil.GetDeckDto(decks.PrivateDeck);
+      var expected = DtoConverters.GetDeckDto(decks.PrivateDeck);
       var actual = deckService.Get(2);
       Assert.AreEqual(expected, actual);
     }
@@ -76,7 +76,7 @@ namespace UnitTests.Services
     [Test]
     public void GetAvailableOnlyCommon()
     {
-      var expected = DtoUtil.GetDecksDtos(new List<Deck> { decks.BaseDeck });
+      var expected = DtoConverters.GetDecksDtos(new List<Deck> { decks.BaseDeck });
       var actual = deckService.GetAvailable(null);
       Assert.AreEqual(expected, actual);
     }
@@ -87,7 +87,7 @@ namespace UnitTests.Services
     [Test]
     public void GetAvailableWithPrivate()
     {
-      var expected = DtoUtil.GetDecksDtos(new List<Deck> { decks.BaseDeck, decks.PrivateDeck });
+      var expected = DtoConverters.GetDecksDtos(new List<Deck> { decks.BaseDeck, decks.PrivateDeck });
       var actual = deckService.GetAvailable(TestOwner);
       Assert.AreEqual(expected, actual);
     }

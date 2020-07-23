@@ -121,7 +121,7 @@ namespace ScrumPokerWeb.Services
     /// <returns>ДТО колоды.</returns>
     public DeckDto Get(long id)
     {
-      return DtoUtil.GetDeckDto(this.deckRepo.Get(id));
+      return DtoConverters.GetDeckDto(this.deckRepo.Get(id));
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ namespace ScrumPokerWeb.Services
     {
       var decks = this.deckRepo.GetAll().Where(d => d.Owner == null).ToList();
       if (owner != null) decks.AddRange(this.deckRepo.GetAll().Where(d => d.Owner == owner));
-      return DtoUtil.GetDecksDtos(decks);
+      return DtoConverters.GetDecksDtos(decks);
     }
 
     private async Task UpdateClientDecks(string name)
