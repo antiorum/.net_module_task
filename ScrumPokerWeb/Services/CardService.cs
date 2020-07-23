@@ -79,7 +79,6 @@ namespace ScrumPokerWeb.Services
       if (card.Owner != whoWantDelete)
       {
         throw new AccessViolationException("Вы не можете удалять чужие карты!");
-        
       }
       this.repository.Delete(id);
       this.UpdateClientCards(whoWantDelete).Wait();
