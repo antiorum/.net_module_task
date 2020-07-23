@@ -1,8 +1,10 @@
-﻿using DataService.Models;
+﻿using System;
+using DataService.Models;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.Extensions.Configuration;
 using NHibernate;
-using NHibernate.Cfg;
+using Configuration = NHibernate.Cfg.Configuration;
 
 namespace DataService
 {
@@ -29,11 +31,16 @@ namespace DataService
 
     private NHibernateConfig()
     {
+      IConfigurationRoot conf = new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.json")
+        .Build();
+
       this.configuration = Fluently.Configure().Database(
           MsSqlConfiguration
             .MsSql2008
             .ShowSql()
-            .ConnectionString("MultipleActiveResultSets=False; Data Source=.\\SQLEXPRESS; Initial Catalog=PokerDB; Integrated Security=True")
+            .ConnectionString(conf.GetConnectionString("DefaultConnection"))
             .UseReflectionOptimizer())
         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<CardMap>())
         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DeckMap>())
