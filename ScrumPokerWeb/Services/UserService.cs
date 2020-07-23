@@ -16,7 +16,6 @@ namespace ScrumPokerWeb.Services
   {
     private readonly IRepository<User> repository;
     private readonly ConcurrentDictionary<string, string> userWithSignalRIds;
-    private IHubContext<RoomsHub> context;
 
     /// <summary>
     /// Конструктор сервиса.
@@ -26,7 +25,6 @@ namespace ScrumPokerWeb.Services
     public UserService(IRepository<User> repository, IHubContext<RoomsHub> context)
     {
       this.repository = repository;
-      this.context = context;
       this.userWithSignalRIds = new ConcurrentDictionary<string, string>();
     }
 

@@ -6,4 +6,3 @@ D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.Ass
 D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.csproj.CoreCompileInputs.cache
 D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.dll
 D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.pdb
-D:\с#\ModuleTask\ScrumPoker\DataService\obj\Debug\netcoreapp3.1\DataService.csprojAssemblyReference.cache
