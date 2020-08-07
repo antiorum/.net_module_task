@@ -25,11 +25,5 @@ namespace DataService.InitData
     /// </summary>
     /// <value>Сущность-пользователь.</value>
     public User BorkaUser { get; } = new User { Id = 3, Name = "Bor'ka", Rooms = new HashSet<Room>() };
-
-    /// <summary>
-    /// Тестовый пользователь №4.
-    /// </summary>
-    /// <value>Сущность-пользователь.</value>
-    public User UserForInsert { get; } = new User { Id = 4, Name = "Test", Rooms = new HashSet<Room>() };
   }
 }

@@ -9,6 +9,8 @@ namespace DataService.InMemoryRepositories
   /// </summary>
   public class DiscussionResultInMemoryRepository : BaseInMemoryRepository<DiscussionResult>
   {
+    private long idCounter = 3;
+
     /// <summary>
     /// Конструктор репозитория с заполнением тестовым данными.
     /// </summary>
@@ -17,6 +19,16 @@ namespace DataService.InMemoryRepositories
       DiscussionResults results = new DiscussionResults();
       this.Save(results.TestDiscussionResult1);
       this.Save(results.TestDiscussionResult2);
+    }
+
+    public override void Save(DiscussionResult item)
+    {
+      if (item.Id == 0)
+      {
+        item.Id = idCounter;
+        idCounter++;
+      }
+      base.Save(item);
     }
   }
 }

@@ -9,6 +9,8 @@ namespace DataService.InMemoryRepositories
   /// </summary>
   public class CardInMemoryRepository : BaseInMemoryRepository<Card>
   {
+    private long idCounter = 8;
+
     /// <summary>
     /// Конструктор репозитория с заполнением тестовым данными.
     /// </summary>
@@ -21,6 +23,17 @@ namespace DataService.InMemoryRepositories
       this.Save(cards.CardEight);
       this.Save(cards.CardCoffee);
       this.Save(cards.CardTen);
+    }
+
+    public override void Save(Card item)
+    {
+      if (item.Id == 0)
+      {
+        item.Id = idCounter;
+        idCounter++;
+      }
+      
+      base.Save(item);
     }
   }
 }

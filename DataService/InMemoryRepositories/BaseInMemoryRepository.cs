@@ -45,10 +45,6 @@ namespace DataService.InMemoryRepositories
     /// <param name="item">Экземпляр Т, который будет сохранен.</param>
     public virtual void Save(T item)
     {
-      if (item.Id == 0)
-      {
-        item.Id = innerVault.Last().Id + 1;
-      }
       innerVault.Add(item);
     }
 
