@@ -27,10 +27,12 @@ namespace ScrumPokerWeb.Controllers
 
     private string LoggedUser => User.Identity.Name;
 
+
     /// <summary>
     /// Доступные пользователю колоды.
     /// </summary>
     /// <returns>Коллекция объектов-отображений колод.</returns>
+    [AllowAnonymous]
     [HttpGet]
     public IEnumerable<DeckDto> GetAvailable()
     {

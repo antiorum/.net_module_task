@@ -30,7 +30,7 @@ namespace UnitTests.Services
     public void AddMarkInCurrentDiscussion()
     {
       roomService.StartNewDiscussion(1, TestOwner, "test");
-      roomService.AddOrChangeMarkInCurrentDiscussion(1, TestOwner, "1");
+      roomService.AddOrChangeMarkInCurrentDiscussion(1, TestOwner, "1", 3);
       var expected = 1;
       var actual = discussionResultService.Get(3).UsersMarks[TestOwner];
       var expectedMethod = "UserVoted";
@@ -49,7 +49,7 @@ namespace UnitTests.Services
       Assert.Throws(typeof(AccessViolationException), delegate
       {
         roomService.StartNewDiscussion(1, TestOwner, "test");
-        roomService.AddOrChangeMarkInCurrentDiscussion(1, WrongUser, "1");
+        roomService.AddOrChangeMarkInCurrentDiscussion(1, WrongUser, "1", 3);
       });
     }
 
@@ -77,7 +77,7 @@ namespace UnitTests.Services
     {
       Assert.Throws(typeof(AccessViolationException), delegate
       {
-        roomService.Create(TestOwner, "666", "10", "1");
+        roomService.Create(TestOwner, "666", "test", "10", "1");
         roomService.AddUserToRoomAndGet(2, WrongUser, "42");
       });
     }
@@ -115,7 +115,7 @@ namespace UnitTests.Services
     [Test]
     public void Create()
     {
-      roomService.Create(TestOwner, "pass", "10", "1");
+      roomService.Create(TestOwner, "pass", "RoomToInsert", "10", "1");
       var expectedMethod = "UpdateRooms";
       var actualMethod = InvokedSignalRMethod;
       Assert.AreEqual(expectedMethod, actualMethod);
@@ -182,7 +182,7 @@ namespace UnitTests.Services
     public void EndCurrentDiscussion()
     {
       roomService.StartNewDiscussion(1, TestOwner, "test");
-      roomService.EndCurrentDiscussion(1, TestOwner, "test resume");
+      roomService.EndCurrentDiscussion(1, TestOwner, "test resume", 3);
       var discussionResult = discussionResultService.Get(3);
       var expectedResume = "test resume";
       var actualResume = discussionResult.Resume;
@@ -203,7 +203,7 @@ namespace UnitTests.Services
       Assert.Throws(typeof(AccessViolationException), delegate
       {
         roomService.StartNewDiscussion(1, TestOwner, "test");
-        roomService.EndCurrentDiscussion(1, WrongUser, "test resume");
+        roomService.EndCurrentDiscussion(1, WrongUser, "test resume", 3);
       });
     }
 
@@ -261,8 +261,8 @@ namespace UnitTests.Services
     public void RestartDiscussion()
     {
       roomService.StartNewDiscussion(1, TestOwner, "test");
-      roomService.EndCurrentDiscussion(1, TestOwner, "test resume");
-      roomService.RestartDiscussion(1, TestOwner);
+      roomService.EndCurrentDiscussion(1, TestOwner, "test resume", 3);
+      roomService.RestartDiscussion(1, TestOwner, 3);
       var expectedResume = string.Empty;
       var actualResume = discussionResultService.Get(3).Resume;
       var expectedEnding = DateTime.MinValue;
@@ -284,8 +284,8 @@ namespace UnitTests.Services
       Assert.Throws(typeof(AccessViolationException), delegate
       {
         roomService.StartNewDiscussion(1, TestOwner, "test");
-        roomService.EndCurrentDiscussion(1, TestOwner, "test resume");
-        roomService.RestartDiscussion(1, WrongUser);
+        roomService.EndCurrentDiscussion(1, TestOwner, "test resume", 3);
+        roomService.RestartDiscussion(1, WrongUser, 3);
       });
     }
 

@@ -16,14 +16,16 @@ namespace ScrumPokerWeb.DTO
     /// <param name="owner">Владелец.</param>
     /// <param name="deck">Используемая колода.</param>
     /// <param name="id">ИД комнаты.</param>
-    /// <param name="timerMinutes">Количество минут таймера.</param>
-    public RoomDto(bool @protected, ISet<UserDto> users, UserDto owner, DeckDto deck, long id, int timerMinutes) : base(id)
+    /// <param name="timerDuration">Количество минут таймера.</param>
+    public RoomDto(bool @protected, ISet<UserDto> users, UserDto owner, DeckDto deck, long id, TimeSpan? timerDuration, string name, ISet<DiscussionResultDto> results) : base(id)
     {
       this.Protected = @protected;
       this.Users = users;
       this.Owner = owner;
       this.Deck = deck;
-      this.TimerMinutes = timerMinutes;
+      this.TimerDuration = timerDuration;
+      this.Name = name;
+      this.DiscussionResults = results;
     }
 
     /// <summary>
@@ -51,10 +53,21 @@ namespace ScrumPokerWeb.DTO
     public DeckDto Deck { get; }
 
     /// <summary>
-    /// Кол-во минут таймера.
+    /// Название комнаты.
     /// </summary>
-    /// <value>Целое число минут.</value>
-    public int TimerMinutes { get; }
+    public string Name { get; }
+
+    /// <summary>
+    /// Продолжительность таймера таймера.
+    /// </summary>
+    /// <value>Временной промежуток.</value>
+    public TimeSpan? TimerDuration { get; }
+
+    /// <summary>
+    /// Результаты обсуждений комнаты.
+    /// </summary>
+    /// <value>Коллекция ДТО результатов обсуждений.</value>
+    public ISet<DiscussionResultDto> DiscussionResults { get; set; }
 
     /// <summary>
     /// Переопределение эквивалентности для объектов одного класса.
@@ -63,7 +76,7 @@ namespace ScrumPokerWeb.DTO
     /// <returns>Равны ли объекты.</returns>
     protected bool Equals(RoomDto other)
     {
-      return Protected == other.Protected && Equals(Owner, other.Owner) && Equals(Deck, other.Deck) && TimerMinutes == other.TimerMinutes;
+      return Protected == other.Protected && Equals(Owner, other.Owner) && Equals(Deck, other.Deck) && Name == other.Name && TimerDuration == other.TimerDuration;
     }
 
     /// <summary>
@@ -85,7 +98,7 @@ namespace ScrumPokerWeb.DTO
     /// <returns>Целочисленный хэш-код.</returns>
     public override int GetHashCode()
     {
-      return HashCode.Combine(Protected, Owner, Deck, TimerMinutes);
+      return HashCode.Combine(Protected, Owner, Deck, Name, TimerDuration);
     }
   }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DataService.Models;
 
-namespace UnitTests.TestData
+namespace DataService.InitData
 {
   /// <summary>
   /// Содержит тестовые данные комнат.
@@ -17,7 +17,8 @@ namespace UnitTests.TestData
     {
       Id = 1,
       Name = "TestRoom1",
-      TimerDuration = TimeSpan.Parse("10")
+      TimerDuration = TimeSpan.Parse("0:00:00:10"),
+      Password = string.Empty
     };
 
     /// <summary>

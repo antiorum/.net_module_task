@@ -53,13 +53,29 @@ CREATE TABLE [dbo].[Users] (
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+
+
+CREATE TABLE [dbo].[Rooms] (
+    [Id]            BIGINT         IDENTITY (1, 1) NOT NULL,
+    [Password]      NVARCHAR (255) NULL,
+    [Name]          NVARCHAR (255) NULL,
+    [TimerDuration] BIGINT         NULL,
+    [Owner_id]      BIGINT         NULL,
+    [Deck_id]       BIGINT         NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FKE456B23EC47788C4] FOREIGN KEY ([Owner_id]) REFERENCES [dbo].[Users] ([Id]),
+    CONSTRAINT [FKE456B23EB7C37A9] FOREIGN KEY ([Deck_id]) REFERENCES [dbo].[Decks] ([Id])
+);
+
 CREATE TABLE [dbo].[DiscussionResults] (
-    [Id]       BIGINT         IDENTITY (1, 1) NOT NULL,
+    [Id]        BIGINT         IDENTITY (1, 1) NOT NULL,
     [Beginning] DATETIME2 (7)  NULL,
-    [Ending]   DATETIME2 (7)  NULL,
-    [Theme]    NVARCHAR (255) NULL,
-    [Resume]   NVARCHAR (255) NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC)
+    [Ending]    DATETIME2 (7)  NULL,
+    [Theme]     NVARCHAR (255) NULL,
+    [Resume]    NVARCHAR (255) NULL,
+    [Room_id]   BIGINT         NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FKDDB49C6CFC2E7751] FOREIGN KEY ([Room_id]) REFERENCES [dbo].[Rooms] ([Id])
 );
 
 CREATE TABLE [dbo].[UsersCards] (
@@ -71,18 +87,6 @@ CREATE TABLE [dbo].[UsersCards] (
     CONSTRAINT [FKCA4CBCFF44752581] FOREIGN KEY ([Card_id]) REFERENCES [dbo].[Cards] ([Id]),
     CONSTRAINT [FKCA4CBCFFA66FDB98] FOREIGN KEY ([DiscussionResult_id]) REFERENCES [dbo].[DiscussionResults] ([Id]),
     CONSTRAINT [FKCA4CBCFFDFEF210] FOREIGN KEY ([User_id]) REFERENCES [dbo].[Users] ([Id])
-);
-
-CREATE TABLE [dbo].[Rooms] (
-    [Id]                        BIGINT         IDENTITY (1, 1) NOT NULL,
-    [Password]                  NVARCHAR (255) NULL,
-    [TimerMinutes]              INT            NULL,
-    [CurrentDiscussionResultId] BIGINT         NULL,
-    [Owner_id]                  BIGINT         NULL,
-    [Deck_id]                   BIGINT         NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK5F9CE7AAB91D3D1] FOREIGN KEY ([Owner_id]) REFERENCES [dbo].[Users] ([Id]),
-    CONSTRAINT [FK5F9CE7AA456AFD88] FOREIGN KEY ([Deck_id]) REFERENCES [dbo].[Decks] ([Id])
 );
 
 CREATE TABLE [dbo].[UsersInRooms] (
@@ -125,9 +129,17 @@ insert into CardsDecks values
 insert into Users values ('valera'), ('Borya')
 
 insert into Rooms values 
-('', 4, 0 , 1, 2),
-('1', 0, 0 , 2, 1)
+('','Just Room', null, 1, 1),
+('1','Room of pain', 256, 2, 1),
+('','Room with timer', 666666, 2, 1)
 
 insert into UsersInRooms values 
 (1, 1),
 (2, 2)
+
+insert into DiscussionResults values
+(GETDATE(), GETDATE(), 'test theme', 'test resume', 1)
+
+insert into UsersCards values
+(1, 2, 1),
+(2, 3, 1)

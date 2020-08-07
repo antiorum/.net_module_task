@@ -4,6 +4,7 @@ using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.Configuration;
 using NHibernate;
+using NHibernate.Tool.hbm2ddl;
 using Configuration = NHibernate.Cfg.Configuration;
 
 namespace DataService
@@ -50,7 +51,8 @@ namespace DataService
         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<RoomMap>())
         .BuildConfiguration();
 
-      // new SchemaExport(configuration).Save(true, true);
+      //new SchemaExport(configuration).Drop(true, true);
+      //new SchemaExport(configuration).Create(true, true);
       this.factory = this.configuration.BuildSessionFactory();
       this.Session = this.factory.OpenSession();
     }

@@ -14,6 +14,7 @@ namespace DataService.Models
     /// </summary>
     public User()
     {
+      Rooms = new HashSet<Room>();
     }
 
     /// <summary>

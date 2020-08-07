@@ -23,7 +23,7 @@ namespace ScrumPokerWeb.Services
     private readonly IRepository<Room> roomRepository;
     private readonly IRepository<User> userRepository;
     private readonly UserService userService;
-    private readonly ConcurrentDictionary<long, Timer> discussionTimers;
+    private readonly ConcurrentDictionary<long, Timer?> discussionTimers;
 
     /// <summary>
     /// Конструктор сервиса.
@@ -67,8 +67,8 @@ namespace ScrumPokerWeb.Services
       var room = this.roomRepository.Get(id);
       if (room.Users.Select(u => u.Name).Contains(loggedUser))
       {
-        this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
-        this.SendUpdateRoomToClients(room.Id, "UpdateUsersInRoom").Wait();
+        //this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
+        //this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
         return DtoConverters.GetRoomDto(room);
       }
 
@@ -80,19 +80,21 @@ namespace ScrumPokerWeb.Services
     /// </summary>
     /// <param name="loggedUser">Владелец комнаты.</param>
     /// <param name="password">Пароль.</param>
-    /// <param name="timerMinutes">На сколько минут будет установлен таймер.</param>
+    /// <param name="timerDuration">На сколько минут будет установлен таймер.</param>
     /// <param name="deckId">ИД используемой колоды.</param>
-    public void Create(string loggedUser, string password, string timerMinutes, string deckId)
+    public long Create(string loggedUser, string password, string name, string timerDuration, string deckId)
     {
-      var minutes = int.Parse(timerMinutes);
+      TimeSpan? minutes = TimeSpan.Parse(timerDuration);
+      if (timerDuration == "0") minutes = null;
       var deck = this.deckRepository.Get(long.Parse(deckId));
-      var room = new Room { Password = password, TimerMinutes = minutes, Deck = deck };
+      var room = new Room { Password = password, Name = name, TimerDuration = minutes, Deck = deck };
       var owner = this.GetUserByName(loggedUser);
       room.Owner = owner;
       this.roomRepository.Save(room);
       this.AddUserToRoom(owner, room);
-      this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
+      //this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
       this.hubContext.Clients.All.SendAsync("UpdateRooms").Wait();
+      return room.Id;
     }
 
     /// <summary>
@@ -109,8 +111,8 @@ namespace ScrumPokerWeb.Services
       if (room.Password == password)
       {
         if (!room.Users.Contains(user)) this.AddUserToRoom(user, room);
-        this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
-        this.SendUpdateRoomToClients(room.Id, "UpdateUsersInRoom").Wait();
+        //this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
+        this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
         return DtoConverters.GetRoomDto(this.roomRepository.Get(room.Id));
       }
 
@@ -146,9 +148,13 @@ namespace ScrumPokerWeb.Services
       var room = this.roomRepository.Get(id);
       var user = this.GetUserByName(loggedUser);
       if (room.Users.Contains(user)) this.RemoveUserFromRoom(room, user);
-      if (room.Users.Count == 0) this.RemoveTimer(room.CurrentDiscussionResultId);
-      this.RemoveConnectionFromGroup(user.Name, room.Id).Wait();
-      this.SendUpdateRoomToClients(room.Id, "UpdateUsersInRoom").Wait();
+      if (room.Users.Count == 0)
+      {
+        this.RemoveAllRoomTimers(room);
+      }
+
+      //this.RemoveConnectionFromGroup(user.Name, room.Id).Wait();
+      this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
     }
 
     /// <summary>
@@ -168,10 +174,10 @@ namespace ScrumPokerWeb.Services
       if (room.Users.Contains(user))
       {
         this.RemoveUserFromRoom(room, user);
-        this.RemoveConnectionFromGroup(user.Name, room.Id).Wait();
+        //this.RemoveConnectionFromGroup(user.Name, room.Id).Wait();
       }
 
-      this.SendUpdateRoomToClients(room.Id, "UpdateUsersInRoom").Wait();
+      this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
     }
 
     /// <summary>
@@ -184,6 +190,7 @@ namespace ScrumPokerWeb.Services
       var room = this.roomRepository.Get(id);
       if (room.Owner.Name != whoWantDelete)
         throw new AccessViolationException("Нельзя удалять чужие комнаты!");
+      this.RemoveAllRoomTimers(room);
       this.roomRepository.Delete(id);
       this.hubContext.Clients.All.SendAsync("UpdateRooms").Wait();
     }
@@ -201,15 +208,15 @@ namespace ScrumPokerWeb.Services
       {
         throw new AccessViolationException("Только владелец комнаты может начать обсуждение.");
       }
-      var discussionId = this.discussionResultService.Create(theme);
-      room.CurrentDiscussionResultId = discussionId;
+      var discussionResult = this.discussionResultService.Create(theme);
+      room.DiscussionResults.Add(discussionResult);
       this.roomRepository.Update(room);
-      if (room.TimerMinutes != 0)
+      if (room.TimerDuration.HasValue)
       {
-        this.CreateTimer(room.TimerMinutes, discussionId, loggedUser);
+        this.CreateTimer(room.Id, room.TimerDuration, discussionResult.Id, loggedUser);
       }
 
-      this.SendUpdateRoomToClients(room.Id, "StartDiscussion").Wait();
+      this.SendUpdateRoomToClients(room, "StartDiscussion").Wait();
     }
 
     /// <summary>
@@ -218,13 +225,13 @@ namespace ScrumPokerWeb.Services
     /// <param name="id">ИД комнаты.</param>
     /// <param name="loggedUser">Пользователь, отправивший запрос.</param>
     /// <param name="cardId">ИД карты.</param>
-    public void AddOrChangeMarkInCurrentDiscussion(long id, string loggedUser, string cardId)
+    public void AddOrChangeMarkInCurrentDiscussion(long id, string loggedUser, string cardId, long discussionResultId)
     {
       var room = this.roomRepository.Get(id);
       if (!room.Users.Select(u => u.Name).Contains(loggedUser))
         throw new AccessViolationException("Только участники комнаты могут добавлять оценки.");
-      this.discussionResultService.AddOrChangeMark(room.CurrentDiscussionResultId, loggedUser, cardId);
-      this.SendUpdateRoomToClients(room.Id, "UserVoted").Wait();
+      this.discussionResultService.AddOrChangeMark(discussionResultId, loggedUser, cardId);
+      this.SendUpdateRoomToClients(room, "UserVoted").Wait();
     }
 
     /// <summary>
@@ -233,16 +240,16 @@ namespace ScrumPokerWeb.Services
     /// <param name="id">ИД комнаты.</param>
     /// <param name="loggedUser">Пользователь, пославший запрос.</param>
     /// <param name="resume">Итог обсуждения или комментарий.</param>
-    public void EndCurrentDiscussion(long id, string loggedUser, string resume)
+    public void EndCurrentDiscussion(long id, string loggedUser, string resume, long discussionResultId)
     {
       var room = this.roomRepository.Get(id);
       if (room.Owner.Name != loggedUser)
         throw new AccessViolationException("Только владелец комнаты может закончить обсуждение.");
 
-      this.discussionResultService.EndDiscussion(room.CurrentDiscussionResultId, resume);
-      this.RemoveTimer(room.CurrentDiscussionResultId);
+      this.discussionResultService.EndDiscussion(discussionResultId, resume);
+      this.RemoveTimer(discussionResultId);
 
-      this.SendUpdateRoomToClients(room.Id, "EndDiscussion").Wait();
+      this.SendUpdateRoomToClients(room, "EndDiscussion").Wait();
     }
 
     /// <summary>
@@ -250,18 +257,18 @@ namespace ScrumPokerWeb.Services
     /// </summary>
     /// <param name="id">ИД комнаты.</param>
     /// <param name="loggedUser">Пользователь, пославший запрос.</param>
-    public void RestartDiscussion(long id, string loggedUser)
+    public void RestartDiscussion(long id, string loggedUser, long discussionResultId)
     {
       var room = this.roomRepository.Get(id);
       if (room.Owner.Name != loggedUser)
         throw new AccessViolationException("Только владелец комнаты может заново начать обсуждение.");
-      this.discussionResultService.ResetDiscussionResult(room.CurrentDiscussionResultId);
-      this.RemoveTimer(room.CurrentDiscussionResultId);
-      if (room.TimerMinutes != 0)
+      this.discussionResultService.ResetDiscussionResult(discussionResultId);
+      this.RemoveTimer(discussionResultId);
+      if (room.TimerDuration.HasValue)
       {
-        this.CreateTimer(room.TimerMinutes, room.CurrentDiscussionResultId, loggedUser);
+        this.CreateTimer(room.Id, room.TimerDuration, discussionResultId, loggedUser);
       }
-      this.SendUpdateRoomToClients(room.Id, "StartDiscussion").Wait();
+      this.SendUpdateRoomToClients(room, "StartDiscussion").Wait();
     }
 
     private void RemoveUserFromRoom(Room room, User user)
@@ -285,35 +292,55 @@ namespace ScrumPokerWeb.Services
       return this.userRepository.GetAll().FirstOrDefault(u => u.Name == name);
     }
 
-    private async Task AddConnectionIdToGroup(string username, long roomId)
-    {
-      var connectionId = this.userService.GetConnectionIdByName(username);
-      await this.hubContext.Groups.RemoveFromGroupAsync(connectionId, $"room{roomId}");
-      await this.hubContext.Groups.AddToGroupAsync(connectionId, $"room{roomId}");
-    }
+    //private async Task AddConnectionIdToGroup(string username, long roomId)
+    //{
+    //  var connectionId = this.userService.GetConnectionIdByName(username);
+    //  await this.hubContext.Groups.RemoveFromGroupAsync(connectionId, $"room{roomId}");
+    //  await this.hubContext.Groups.AddToGroupAsync(connectionId, $"room{roomId}");
+    //}
 
-    private async Task RemoveConnectionFromGroup(string username, long roomId)
-    {
-      var connectionId = this.userService.GetConnectionIdByName(username);
-      await this.hubContext.Groups.RemoveFromGroupAsync(connectionId, $"room{roomId}");
-    }
+    //private async Task RemoveConnectionFromGroup(string username, long roomId)
+    //{
+    //  var connectionId = this.userService.GetConnectionIdByName(username);
+    //  await this.hubContext.Groups.RemoveFromGroupAsync(connectionId, $"room{roomId}");
+    //}
 
-    private async Task SendUpdateRoomToClients(long roomId, string method)
-    {
-      await this.hubContext.Clients.Group($"room{roomId}").SendAsync(method);
-    }
+    //private async Task SendUpdateRoomToClients(long roomId, string method)
+    //{
+    //  await this.hubContext.Clients.Group($"room{roomId}").SendAsync(method);
+    //}
 
-    private void CreateTimer(int minutes, long discussionResultId, string loggedUser)
+    private async Task SendUpdateRoomToClients(Room room, string method)
     {
-      var timer = new Timer(1000 * 60 * minutes);
-      timer.AutoReset = false;
-      timer.Elapsed += (e, a) =>
+      foreach (var user in room.Users)
       {
-        this.EndCurrentDiscussion(discussionResultId, loggedUser, string.Empty);
-      };
-      timer.Enabled = true;
-      timer.Start();
-      this.discussionTimers.TryAdd(discussionResultId, timer);
+        if (user == null) continue;
+        var connectionId = userService.GetConnectionIdByName(user.Name);
+        if (connectionId != null)
+        {
+          await this.hubContext.Clients.Client(connectionId).SendAsync(method);
+        }
+      }
+    }
+
+    private void CreateTimer(long roomId, TimeSpan? duration, long discussionResultId, string loggedUser)
+    {
+      if (duration.Value.TotalMilliseconds != 0)
+      {
+        var timer = new Timer(duration.Value.TotalMilliseconds);
+        timer.AutoReset = false;
+        timer.Elapsed += (e, a) =>
+        {
+          this.EndCurrentDiscussion(roomId, loggedUser, string.Empty, discussionResultId);
+        };
+        timer.Enabled = true;
+        timer.Start();
+        this.discussionTimers.TryAdd(discussionResultId, timer);
+      }
+      else
+      {
+        this.discussionTimers.TryAdd(discussionResultId, null);
+      }
     }
 
     private void RemoveTimer(long discussionResultId)
@@ -322,6 +349,27 @@ namespace ScrumPokerWeb.Services
       timer?.Stop();
       timer?.Dispose();
       this.discussionTimers.TryRemove(discussionResultId, out _);
+    }
+
+    private void RemoveAllRoomTimers(Room room)
+    {
+      foreach (long l in room.DiscussionResults.Select(r => r.Id))
+      {
+        this.RemoveTimer(l);
+      }
+    }
+
+    public void DeleteDiscussionResult(in long id, string loggedUser, long discussionId)
+    {
+      var room = this.roomRepository.Get(id);
+      if (room.Owner.Name != loggedUser)
+        throw new AccessViolationException("Только владелец комнаты может удалять результаты.");
+
+      room.DiscussionResults.Remove(room.DiscussionResults.FirstOrDefault(dr => dr.Id == discussionId));
+      roomRepository.Update(room);
+      this.discussionResultService.Delete(discussionId);
+
+      this.SendUpdateRoomToClients(room, "UpdateDiscussionResults").Wait();
     }
   }
 }

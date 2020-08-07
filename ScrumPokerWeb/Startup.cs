@@ -1,4 +1,5 @@
 using DataService;
+using DataService.InMemoryRepositories;
 using DataService.Models;
 using DataService.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ScrumPokerWeb.Services;
 using ScrumPokerWeb.SignalR;
+using UnitTests.TestRepositories;
 
 namespace ScrumPokerWeb
 {
@@ -41,11 +43,16 @@ namespace ScrumPokerWeb
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
-      services.AddTransient<IRepository<Card>, CardRepository>();
-      services.AddTransient<IRepository<Deck>, DeckRepository>();
-      services.AddTransient<IRepository<DiscussionResult>, DiscussionResultRepository>();
-      services.AddTransient<IRepository<Room>, RoomRepository>();
-      services.AddTransient<IRepository<User>, UserRepository>();
+      //services.AddTransient<IRepository<Card>, CardRepository>();
+      //services.AddTransient<IRepository<Deck>, DeckRepository>();
+      //services.AddTransient<IRepository<DiscussionResult>, DiscussionResultRepository>();
+      //services.AddTransient<IRepository<Room>, RoomRepository>();
+      //services.AddTransient<IRepository<User>, UserRepository>();
+      services.AddSingleton<IRepository<Card>, CardInMemoryRepository>();
+      services.AddSingleton<IRepository<Deck>, DeckInMemoryRepository>();
+      services.AddSingleton<IRepository<DiscussionResult>, DiscussionResultInMemoryRepository>();
+      services.AddSingleton<IRepository<Room>, RoomInMemoryRepository>();
+      services.AddSingleton<IRepository<User>, UserInMemoryRepository>();
       services.AddSingleton(typeof(RoomService));
       services.AddSingleton(typeof(CardService));
       services.AddSingleton(typeof(DeckService));
@@ -68,6 +75,7 @@ namespace ScrumPokerWeb
 
       services.AddAuthorization();
       services.AddSignalR(r => { r.MaximumReceiveMessageSize = 102400000; });
+      services.AddMvc().AddNewtonsoftJson();
     }
 
     /// <summary>

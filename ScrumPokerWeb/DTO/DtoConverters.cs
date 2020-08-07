@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DataService.Models;
 
 namespace ScrumPokerWeb.DTO
@@ -71,7 +73,9 @@ namespace ScrumPokerWeb.DTO
           GetUserDto(room.Owner),
           GetDeckDto(room.Deck),
           room.Id,
-          room.TimerMinutes);
+          room.TimerDuration,
+          room.Name,
+          GetDiscussionResultsDtos(room.DiscussionResults).ToHashSet());
     }
 
     /// <summary>
@@ -93,7 +97,7 @@ namespace ScrumPokerWeb.DTO
     {
       return new DiscussionResultDto(
           result.Beginning, result.Ending, result.Theme, result.Resume,
-          result.UsersCards.ToDictionary(uc => uc.User.Name, uc => uc.Card.Value),
+          result.UsersCards.ToDictionary(uc => uc.User.Name, uc =>  GetCardDto(uc.Card)),
           result.Id);
     }
 

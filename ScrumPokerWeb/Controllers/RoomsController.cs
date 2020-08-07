@@ -70,13 +70,14 @@ namespace ScrumPokerWeb.Controllers
     /// Создаёт новую комнату.
     /// </summary>
     [HttpPost]
-    public void Post()
+    public long Post()
     {
       string password = Request.Form["password"];
+      string name = Request.Form["name"];
       string timerMinutes = Request.Form["timer"];
       if (timerMinutes == string.Empty) timerMinutes = "0";
       string deckId = Request.Form["deck"];
-      service.Create(LoggedUser, password, timerMinutes, deckId);
+      return service.Create(LoggedUser, password, name,timerMinutes, deckId);
     }
 
     /// <summary>
@@ -140,7 +141,8 @@ namespace ScrumPokerWeb.Controllers
     public void AddMarkInDiscussion(long id)
     {
       string cardId = Request.Form["cardId"];
-      service.AddOrChangeMarkInCurrentDiscussion(id, LoggedUser, cardId);
+      long discussionResultId = long.Parse(Request.Form["discussionId"]);
+      service.AddOrChangeMarkInCurrentDiscussion(id, LoggedUser, cardId, discussionResultId);
     }
 
     /// <summary>
@@ -151,7 +153,8 @@ namespace ScrumPokerWeb.Controllers
     public void EndDiscussion(long id)
     {
       string resume = Request.Form["resume"];
-      service.EndCurrentDiscussion(id, LoggedUser, resume);
+      long discussionResultId = long.Parse(Request.Form["discussionId"]);
+      service.EndCurrentDiscussion(id, LoggedUser, resume, discussionResultId);
     }
 
     /// <summary>
@@ -161,7 +164,14 @@ namespace ScrumPokerWeb.Controllers
     [HttpPut("{id}/restartDiscussion")]
     public void RestartDiscussion(long id)
     {
-      service.RestartDiscussion(id, LoggedUser);
+      long discussionResultId = long.Parse(Request.Form["discussionId"]);
+      service.RestartDiscussion(id, LoggedUser, discussionResultId);
+    }
+
+    [HttpDelete("{id}/deleteDiscussion/{discussionId}")]
+    public void DeleteDiscussionResult(long id, long discussionId)
+    {
+      service.DeleteDiscussionResult(id, LoggedUser, discussionId);
     }
   }
 }

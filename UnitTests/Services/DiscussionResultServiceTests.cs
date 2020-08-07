@@ -18,10 +18,10 @@ namespace UnitTests.Services
     [Test]
     public void AddMark()
     {
-      var newDiscussionId = discussionResultService.Create("test theme");
-      discussionResultService.AddOrChangeMark(newDiscussionId, TestOwner, "1");
+      var discussionResult = discussionResultService.Create("test theme");
+      discussionResultService.AddOrChangeMark(discussionResult.Id, TestOwner, "1");
       var expectedMarksSize = 1;
-      var actualMarksSize = discussionResultService.Get(newDiscussionId).UsersMarks.Count;
+      var actualMarksSize = discussionResultService.Get(discussionResult.Id).UsersMarks.Count;
       Assert.AreEqual(expectedMarksSize, actualMarksSize);
     }
 

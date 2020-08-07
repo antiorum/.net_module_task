@@ -53,14 +53,14 @@ namespace ScrumPokerWeb.Services
     /// Создаёт новый результат обсуждения.
     /// </summary>
     /// <param name="theme">Тема обсуждения.</param>
-    /// <returns>ИД созданного результата.</returns>
-    public long Create(string theme)
+    /// <returns>Cозданный результата.</returns>
+    public DiscussionResult Create(string theme)
     {
       var result = new DiscussionResult();
       result.Beginning = DateTime.Now;
       result.Theme = theme;
       this.resultRepository.Save(result);
-      return result.Id;
+      return result;
     }
 
     /// <summary>
@@ -122,9 +122,19 @@ namespace ScrumPokerWeb.Services
       userCard.Card = card;
       userCard.DiscussionResult = result;
       if (result.UsersCards.Count(uc => userCard.User.Equals(user)) > 0)
-        result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
+      {
+        //result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
+        UserCard oldUserCard = result.UsersCards.First(uc => uc.User.Id == user.Id);
+        result.UsersCards.Remove(oldUserCard);
+        this.resultRepository.Update(result);
+      }
       result.UsersCards.Add(userCard);
       this.resultRepository.Update(result);
+    }
+
+    public void Delete(in long id)
+    {
+      resultRepository.Delete(id);
     }
   }
 }

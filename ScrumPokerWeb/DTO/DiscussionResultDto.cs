@@ -18,7 +18,7 @@ namespace ScrumPokerWeb.DTO
     /// <param name="resume">Итог.</param>
     /// <param name="usersMarks">Оценки пользователей.</param>
     /// <param name="id">ИД.</param>
-    public DiscussionResultDto(DateTime beginning, DateTime ending, string theme, string resume, IDictionary<string, int?> usersMarks, long id) : base(id)
+    public DiscussionResultDto(DateTime beginning, DateTime ending, string theme, string resume, IDictionary<string, CardDto> usersMarks, long id) : base(id)
     {
       Beginning = beginning;
       Ending = ending;
@@ -55,7 +55,7 @@ namespace ScrumPokerWeb.DTO
     /// Оценки пользователей.
     /// </summary>
     /// <value>Коллекция оценок.</value>
-    public virtual IDictionary<string, int?> UsersMarks { get; set; }
+    public virtual IDictionary<string, CardDto> UsersMarks { get; set; }
 
     /// <summary>
     /// Вычисляет продолжительность обсуждения.
@@ -77,9 +77,11 @@ namespace ScrumPokerWeb.DTO
     {
       get
       {
-        return this.UsersMarks.Values.Where(v => v != null).Average();
+        return this.UsersMarks.Values.Select(card => card.Value).Where(v => v != null).Average();
       }
     }
+
+    public virtual bool isCompleted => !Ending.Equals(DateTime.MinValue);
 
     /// <summary>
     /// Переопределение эквивалентности для объектов одного класса.

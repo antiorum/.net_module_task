@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DataService;
 using DataService.Models;
 
-namespace UnitTests.TestRepositories
+namespace DataService.InMemoryRepositories
 {
   /// <summary>
   /// Тестовый базовый репозиторий.
   /// </summary>
   /// <typeparam name="T">Сущность, наследуемая от <see cref="BaseEntity"/></typeparam>
-  public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
+  public abstract class BaseInMemoryRepository<T> : IRepository<T> where T : BaseEntity
   {
     private static IList<T> innerVault;
 
     /// <summary>
     /// Конструктор репозитория.
     /// </summary>
-    protected BaseRepository()
+    protected BaseInMemoryRepository()
     {
       innerVault = new List<T>();
     }
@@ -54,7 +53,7 @@ namespace UnitTests.TestRepositories
     }
 
     /// <summary>
-    /// Изменение элемента.
+    /// Изменение элмента.
     /// </summary>
     /// <param name="item">Экземпляр Т, который будет изменен.</param>
     public virtual void Update(T item)
