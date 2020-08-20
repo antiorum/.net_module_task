@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using DataService.Models;
+using FluentNHibernate.Conventions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +43,10 @@ namespace ScrumPokerWeb.Controllers
     public async void Auth()
     {
       string name = Request.Form["name"];
+      if (name.IsEmpty())
+      {
+        throw new ArgumentException("Имя не должно быть пустым");
+      }
       var user = service.GetByName(name);
       if (user == null)
       {
@@ -90,8 +97,9 @@ namespace ScrumPokerWeb.Controllers
     /// Показать имя текущего пользователя.
     /// </summary>
     /// <returns>Строка с именем.</returns>
+    [AllowAnonymous]
     [HttpGet("currentUser")]
-    public string GetCurrentUser()
+    public string? GetCurrentUser()
     {
       return User.Identity.Name;
     }

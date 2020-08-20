@@ -153,8 +153,7 @@ namespace ScrumPokerWeb.Controllers
     public void EndDiscussion(long id)
     {
       string resume = Request.Form["resume"];
-      long discussionResultId = long.Parse(Request.Form["discussionId"]);
-      service.EndCurrentDiscussion(id, LoggedUser, resume, discussionResultId);
+      service.EndCurrentDiscussion(id, LoggedUser, resume);
     }
 
     /// <summary>
@@ -172,6 +171,13 @@ namespace ScrumPokerWeb.Controllers
     public void DeleteDiscussionResult(long id, long discussionId)
     {
       service.DeleteDiscussionResult(id, LoggedUser, discussionId);
+    }
+
+    [HttpPut("{id}/renameDiscussion/{discussionId}")]
+    public void RenameDiscussionResult(long id, long discussionId)
+    {
+      string newName = Request.Form["discussionNewName"];
+      service.RenameDiscussionResult(id, LoggedUser, discussionId, newName);
     }
   }
 }

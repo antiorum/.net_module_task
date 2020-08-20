@@ -84,8 +84,12 @@ namespace ScrumPokerWeb.Services
     /// <param name="deckId">ИД используемой колоды.</param>
     public long Create(string loggedUser, string password, string name, string timerDuration, string deckId)
     {
-      TimeSpan? minutes = TimeSpan.Parse(timerDuration);
-      if (timerDuration == "0") minutes = null;
+      TimeSpan? minutes;
+      if (timerDuration == "0" || timerDuration == null) minutes = null;
+      else
+      {
+        minutes = TimeSpan.Parse(timerDuration);
+      }
       var deck = this.deckRepository.Get(long.Parse(deckId));
       var room = new Room { Password = password, Name = name, TimerDuration = minutes, Deck = deck };
       var owner = this.GetUserByName(loggedUser);
@@ -110,9 +114,12 @@ namespace ScrumPokerWeb.Services
       var user = this.GetUserByName(loggedUser);
       if (room.Password == password)
       {
-        if (!room.Users.Contains(user)) this.AddUserToRoom(user, room);
+        if (!room.Users.Contains(user))
+        {
+          this.AddUserToRoom(user, room);
+          this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
+        }
         //this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
-        this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
         return DtoConverters.GetRoomDto(this.roomRepository.Get(room.Id));
       }
 
@@ -240,14 +247,15 @@ namespace ScrumPokerWeb.Services
     /// <param name="id">ИД комнаты.</param>
     /// <param name="loggedUser">Пользователь, пославший запрос.</param>
     /// <param name="resume">Итог обсуждения или комментарий.</param>
-    public void EndCurrentDiscussion(long id, string loggedUser, string resume, long discussionResultId)
+    public void EndCurrentDiscussion(long id, string loggedUser, string resume)
     {
       var room = this.roomRepository.Get(id);
       if (room.Owner.Name != loggedUser)
         throw new AccessViolationException("Только владелец комнаты может закончить обсуждение.");
 
-      this.discussionResultService.EndDiscussion(discussionResultId, resume);
-      this.RemoveTimer(discussionResultId);
+      var activeDiscussionId = GetActiveDiscussionId(room);
+      this.discussionResultService.EndDiscussion(activeDiscussionId , resume);
+      this.RemoveTimer(activeDiscussionId);
 
       this.SendUpdateRoomToClients(room, "EndDiscussion").Wait();
     }
@@ -331,7 +339,7 @@ namespace ScrumPokerWeb.Services
         timer.AutoReset = false;
         timer.Elapsed += (e, a) =>
         {
-          this.EndCurrentDiscussion(roomId, loggedUser, string.Empty, discussionResultId);
+          this.EndCurrentDiscussion(roomId, loggedUser, string.Empty);
         };
         timer.Enabled = true;
         timer.Start();
@@ -365,11 +373,35 @@ namespace ScrumPokerWeb.Services
       if (room.Owner.Name != loggedUser)
         throw new AccessViolationException("Только владелец комнаты может удалять результаты.");
 
-      room.DiscussionResults.Remove(room.DiscussionResults.FirstOrDefault(dr => dr.Id == discussionId));
+      room.DiscussionResults = room.DiscussionResults.Where(dr => dr.Id != discussionId).ToHashSet();
       roomRepository.Update(room);
       this.discussionResultService.Delete(discussionId);
 
       this.SendUpdateRoomToClients(room, "UpdateDiscussionResults").Wait();
+    }
+
+    public void RenameDiscussionResult(long id, string loggedUser, long discussionId, string newName)
+    {
+      var room = this.roomRepository.Get(id);
+      if (room.Owner.Name != loggedUser)
+        throw new AccessViolationException("Только владелец комнаты может изменять результаты.");
+
+      var discussionInRoom = room.DiscussionResults.FirstOrDefault(dr => dr.Id == discussionId);
+      discussionInRoom.Theme = newName;
+
+      this.discussionResultService.Rename(discussionId, newName);
+      this.SendUpdateRoomToClients(room, "UpdateDiscussionResults").Wait();
+    }
+
+    private long GetActiveDiscussionId(Room room)
+    {
+      long result = -1;
+      foreach (var discussionResult in room.DiscussionResults)
+      {
+        if (discussionResult.Ending.Equals(DateTime.MinValue)) result = discussionResult.Id;
+      }
+
+      return result;
     }
   }
 }

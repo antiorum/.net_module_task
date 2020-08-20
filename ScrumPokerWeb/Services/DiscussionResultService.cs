@@ -124,7 +124,7 @@ namespace ScrumPokerWeb.Services
       if (result.UsersCards.Count(uc => userCard.User.Equals(user)) > 0)
       {
         //result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
-        UserCard oldUserCard = result.UsersCards.First(uc => uc.User.Id == user.Id);
+        UserCard oldUserCard = result.UsersCards.FirstOrDefault(uc => uc.User.Id == user.Id);
         result.UsersCards.Remove(oldUserCard);
         this.resultRepository.Update(result);
       }
@@ -135,6 +135,13 @@ namespace ScrumPokerWeb.Services
     public void Delete(in long id)
     {
       resultRepository.Delete(id);
+    }
+
+    public void Rename(long id, string newName)
+    {
+      var discussionResult = resultRepository.Get(id);
+      discussionResult.Theme = newName;
+      resultRepository.Update(discussionResult);
     }
   }
 }
