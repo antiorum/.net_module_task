@@ -101,6 +101,14 @@ namespace ScrumPokerWeb.Controllers
       service.ChangeRoomPassword(id, LoggedUser, newPassword);
     }
 
+    [HttpPut("{id}/changeTimer")]
+    public void ChangeTimer(long id)
+    {
+      string newTimerDuration = Request.Form["timer"];
+      if (newTimerDuration == string.Empty) newTimerDuration = "0";
+      service.ChangeRoomTimer(id, LoggedUser, newTimerDuration);
+    }
+
     /// <summary>
     /// Удалить пользователя из комнаты.
     /// </summary>

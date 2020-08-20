@@ -403,5 +403,29 @@ namespace ScrumPokerWeb.Services
 
       return result;
     }
+
+    public void ChangeRoomTimer(long id, string loggedUser, string newTimerDuration)
+    {
+      var room = this.roomRepository.Get(id);
+      if (room.Owner.Name != loggedUser)
+      {
+        throw new AccessViolationException("Нельзя изменять чужую комнату!");
+      }
+
+      TimeSpan? newTimer;
+      if (newTimerDuration == "0" || newTimerDuration == null)
+      {
+        newTimer = null;
+      }
+      else
+      {
+        newTimer = TimeSpan.Parse(newTimerDuration);
+      }
+
+      room.TimerDuration = newTimer;
+      roomRepository.Update(room);
+
+      this.SendUpdateRoomToClients(room, "UpdateDiscussionResults").Wait();
+    }
   }
 }
