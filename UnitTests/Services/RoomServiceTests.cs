@@ -32,7 +32,7 @@ namespace UnitTests.Services
       roomService.StartNewDiscussion(1, TestOwner, "test");
       roomService.AddOrChangeMarkInCurrentDiscussion(1, TestOwner, "1", 3);
       var expected = 1;
-      var actual = discussionResultService.Get(3).UsersMarks[TestOwner];
+      var actual = discussionResultService.Get(3).UsersMarks[TestOwner].Value;
       var expectedMethod = "UserVoted";
       var actualMethod = InvokedSignalRMethod;
 
@@ -182,7 +182,7 @@ namespace UnitTests.Services
     public void EndCurrentDiscussion()
     {
       roomService.StartNewDiscussion(1, TestOwner, "test");
-      roomService.EndCurrentDiscussion(1, TestOwner, "test resume", 3);
+      roomService.EndCurrentDiscussion(1, TestOwner, "test resume");
       var discussionResult = discussionResultService.Get(3);
       var expectedResume = "test resume";
       var actualResume = discussionResult.Resume;
@@ -203,7 +203,7 @@ namespace UnitTests.Services
       Assert.Throws(typeof(AccessViolationException), delegate
       {
         roomService.StartNewDiscussion(1, TestOwner, "test");
-        roomService.EndCurrentDiscussion(1, WrongUser, "test resume", 3);
+        roomService.EndCurrentDiscussion(1, WrongUser, "test resume");
       });
     }
 
@@ -261,7 +261,7 @@ namespace UnitTests.Services
     public void RestartDiscussion()
     {
       roomService.StartNewDiscussion(1, TestOwner, "test");
-      roomService.EndCurrentDiscussion(1, TestOwner, "test resume", 3);
+      roomService.EndCurrentDiscussion(1, TestOwner, "test resume");
       roomService.RestartDiscussion(1, TestOwner, 3);
       var expectedResume = string.Empty;
       var actualResume = discussionResultService.Get(3).Resume;
@@ -284,7 +284,7 @@ namespace UnitTests.Services
       Assert.Throws(typeof(AccessViolationException), delegate
       {
         roomService.StartNewDiscussion(1, TestOwner, "test");
-        roomService.EndCurrentDiscussion(1, TestOwner, "test resume", 3);
+        roomService.EndCurrentDiscussion(1, TestOwner, "test resume");
         roomService.RestartDiscussion(1, WrongUser, 3);
       });
     }

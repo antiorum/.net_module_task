@@ -43,16 +43,17 @@ namespace ScrumPokerWeb
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
-      //services.AddTransient<IRepository<Card>, CardRepository>();
-      //services.AddTransient<IRepository<Deck>, DeckRepository>();
-      //services.AddTransient<IRepository<DiscussionResult>, DiscussionResultRepository>();
-      //services.AddTransient<IRepository<Room>, RoomRepository>();
-      //services.AddTransient<IRepository<User>, UserRepository>();
-      services.AddSingleton<IRepository<Card>, CardInMemoryRepository>();
-      services.AddSingleton<IRepository<Deck>, DeckInMemoryRepository>();
-      services.AddSingleton<IRepository<DiscussionResult>, DiscussionResultInMemoryRepository>();
-      services.AddSingleton<IRepository<Room>, RoomInMemoryRepository>();
-      services.AddSingleton<IRepository<User>, UserInMemoryRepository>();
+      services.AddTransient<IRepository<Card>, CardRepository>();
+      services.AddTransient<IRepository<Deck>, DeckRepository>();
+      services.AddTransient<IRepository<DiscussionResult>, DiscussionResultRepository>();
+      services.AddTransient<IRepository<Room>, RoomRepository>();
+      services.AddTransient<IRepository<User>, UserRepository>();
+      services.AddTransient<IRepository<UserCard>, UserCardRepository>();
+      //services.AddSingleton<IRepository<Card>, CardInMemoryRepository>();
+      //services.AddSingleton<IRepository<Deck>, DeckInMemoryRepository>();
+      //services.AddSingleton<IRepository<DiscussionResult>, DiscussionResultInMemoryRepository>();
+      //services.AddSingleton<IRepository<Room>, RoomInMemoryRepository>();
+      //services.AddSingleton<IRepository<User>, UserInMemoryRepository>();
       services.AddSingleton(typeof(RoomService));
       services.AddSingleton(typeof(CardService));
       services.AddSingleton(typeof(DeckService));

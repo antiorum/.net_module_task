@@ -19,7 +19,7 @@ namespace DataService.Models
       Id(x => x.Id).GeneratedBy.Identity();
       References(x => x.User).Column("User_id");
       References(x => x.Card).Column("Card_id");
-      References(x => x.DiscussionResult).Cascade.All();
+      References(x => x.DiscussionResult).Cascade.SaveUpdate();
     }
   }
 }

@@ -15,6 +15,7 @@ namespace ScrumPokerWeb.Services
     private readonly IRepository<Card> cardRepository;
     private readonly IRepository<DiscussionResult> resultRepository;
     private readonly IRepository<User> userRepository;
+    private readonly IRepository<UserCard> userCardRepository;
 
     /// <summary>
     /// Конструктор сервиса.
@@ -23,11 +24,12 @@ namespace ScrumPokerWeb.Services
     /// <param name="cardRepository">Репозиторий карт.</param>
     /// <param name="userRepository">Репозиторий пользователей.</param>
     public DiscussionResultService(IRepository<DiscussionResult> resultRepository, IRepository<Card> cardRepository,
-      IRepository<User> userRepository)
+      IRepository<User> userRepository, IRepository<UserCard> userCardRepository)
     {
       this.resultRepository = resultRepository;
       this.cardRepository = cardRepository;
       this.userRepository = userRepository;
+      this.userCardRepository = userCardRepository;
     }
 
     /// <summary>
@@ -120,14 +122,15 @@ namespace ScrumPokerWeb.Services
       var userCard = new UserCard();
       userCard.User = user;
       userCard.Card = card;
-      userCard.DiscussionResult = result;
-      if (result.UsersCards.Count(uc => userCard.User.Equals(user)) > 0)
+      if (result.UsersCards.Count(userCard => userCard.User.Equals(user)) > 0)
       {
         //result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
         UserCard oldUserCard = result.UsersCards.FirstOrDefault(uc => uc.User.Id == user.Id);
         result.UsersCards.Remove(oldUserCard);
+        userCardRepository.Delete(oldUserCard.Id);
         this.resultRepository.Update(result);
       }
+      userCard.DiscussionResult = result;
       result.UsersCards.Add(userCard);
       this.resultRepository.Update(result);
     }
