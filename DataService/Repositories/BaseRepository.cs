@@ -10,7 +10,7 @@ namespace DataService.Repositories
   /// <typeparam name="T">Параметр, унаследованный от <see cref="BaseEntity"/>.</typeparam>
   public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
   {
-    private ISession session = NHibernateConfig.GetConfig.Session;
+    private ISessionFactory factory = NHibernateConfig.GetConfig.Factory;
 
     /// <summary>
     /// Выбрать все элементы из базы данных.
@@ -18,12 +18,10 @@ namespace DataService.Repositories
     /// <returns>Типизированная коллекция.</returns>
     public IEnumerable<T> GetAll()
     {
-      lock (session)
+      using var session = factory.OpenSession();
+      using (session.BeginTransaction())
       {
-        using (session.BeginTransaction())
-        {
-          return session.QueryOver<T>().Fetch(a => a).Eager.List();
-        }
+        return session.QueryOver<T>().Fetch(a => a).Eager.List();
       }
     }
 
@@ -34,12 +32,10 @@ namespace DataService.Repositories
     /// <returns>Элемент типа Т.</returns>
     public T Get(long id)
     {
-      lock (session)
+      using var session = factory.OpenSession();
+      using (session.BeginTransaction())
       {
-        using (session.BeginTransaction())
-        {
-          return session.Get<T>(id);
-        }
+        return session.Get<T>(id, LockMode.Force);
       }
     }
 
@@ -49,14 +45,14 @@ namespace DataService.Repositories
     /// <param name="item">Объект сохранения.</param>
     public void Save(T item)
     {
-      lock (session)
+      using var session = factory.OpenSession();
+      using (session.BeginTransaction())
       {
-        using (session.BeginTransaction())
-        {
-          session.Save(item);
-          session.Transaction.Commit();
-        }
+        session.Save(item);
+        session.Transaction.Commit();
+        session.Flush();
       }
+      
     }
 
     /// <summary>
@@ -65,14 +61,14 @@ namespace DataService.Repositories
     /// <param name="item">Элемент, который заместит предыдущий.</param>
     public void Update(T item)
     {
-      lock (session)
+      using var session = factory.OpenSession();
+      using (session.BeginTransaction())
       {
-        using (session.BeginTransaction())
-        {
-          session.Merge(item);
-          session.Transaction.Commit();
-        }
+        session.Merge(item);
+        session.Transaction.Commit();
+        session.Flush();
       }
+      
     }
 
     /// <summary>
@@ -81,14 +77,14 @@ namespace DataService.Repositories
     /// <param name="id">ИД элемента.</param>
     public void Delete(long id)
     {
-      lock (session)
+      using var session = factory.OpenSession();
+      using (session.BeginTransaction())
       {
-        using (session.BeginTransaction())
-        {
-          session.Delete(NHibernateConfig.GetConfig.Session.Get<T>(id));
-          session.Transaction.Commit();
-        }
+        session.Delete(session.Get<T>(id));
+        session.Transaction.Commit();
+        session.Flush();
       }
+      
     }
   }
 }

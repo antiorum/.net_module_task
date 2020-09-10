@@ -22,13 +22,7 @@ namespace DataService
     /// <summary>
     /// Фабрика сессий NHibernate.
     /// </summary>
-    private ISessionFactory factory;
-
-    /// <summary>
-    /// Сессия NHibernate.
-    /// </summary>
-    /// <value>Объект, реализующий ISession.</value>
-    public ISession Session { get; }
+    public ISessionFactory Factory;
 
     private NHibernateConfig()
     {
@@ -51,10 +45,9 @@ namespace DataService
         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<RoomMap>())
         .BuildConfiguration();
 
-      //new SchemaExport(configuration).Drop(true, true);
-      //new SchemaExport(configuration).Create(true, true);
-      this.factory = this.configuration.BuildSessionFactory();
-      this.Session = this.factory.OpenSession();
+      // new SchemaExport(configuration).Drop(true, true);
+      // new SchemaExport(configuration).Create(true, true);
+      this.Factory = this.configuration.BuildSessionFactory();
     }
 
     /// <summary>

@@ -10,33 +10,6 @@ namespace UnitTests.TestData
   public class DiscussionResults
   {
     /// <summary>
-    /// Тестовая оценка №1.
-    /// </summary>
-    public UserCard Mark1 = new UserCard()
-    {
-      Id = 1,
-      DiscussionResult = null,
-    };
-
-    /// <summary>
-    /// Тестовая оценка №2.
-    /// </summary>
-    public UserCard Mark2 = new UserCard()
-    {
-      Id = 2,
-      DiscussionResult = null,
-    };
-
-    /// <summary>
-    /// Тестовая оценка №3.
-    /// </summary>
-    public UserCard Mark3 = new UserCard()
-    {
-      Id = 3,
-      DiscussionResult = null,
-    };
-
-    /// <summary>
     /// Тестовый результат обсуждения №1.
     /// </summary>
     public DiscussionResult TestDiscussionResult1 = new DiscussionResult()
@@ -65,17 +38,9 @@ namespace UnitTests.TestData
     /// </summary>
     public DiscussionResults()
     {
-      Cards cards = new Cards();
-      Users users = new Users();
-      this.Mark1.Card = cards.CardOne;
-      this.Mark1.User = users.JohnUser;
-      this.Mark2.Card = cards.CardFive;
-      this.Mark2.User = users.ValeraUser;
-      this.Mark3.Card = cards.CardCoffee;
-      this.Mark3.User = users.BorkaUser;
-
-      this.TestDiscussionResult1.UsersCards = new HashSet<UserCard>() { this.Mark1, this.Mark2, this.Mark3 };
-      this.TestDiscussionResult2.UsersCards = new HashSet<UserCard>() { this.Mark1, this.Mark3 };
+      var marks = new UserMarks();
+      this.TestDiscussionResult1.UsersCards = new HashSet<UserCard>() { marks.Mark1, marks.Mark2, marks.Mark3 };
+      this.TestDiscussionResult2.UsersCards = new HashSet<UserCard>() { marks.Mark1, marks.Mark3 };
     }
   }
 }

@@ -19,7 +19,7 @@ namespace DataService.Models
       HasManyToMany(x => x.Cards)
           .Cascade.SaveUpdate()
           .Inverse()
-          .Table("CardsDecks");
+          .Table("CardsDecks").Not.LazyLoad();
     }
   }
 }

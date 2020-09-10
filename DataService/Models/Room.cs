@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataService.Models
 {
@@ -83,23 +84,23 @@ namespace DataService.Models
     /// </summary>
     /// <param name="obj">Объект сравнения.</param>
     /// <returns>Результат проверки равенства.</returns>
-    //public override bool Equals(object obj)
-    //{
-    //  return obj is Room room &&
-    //         Id == room.Id &&
-    //         EqualityComparer<User>.Default.Equals(Owner, room.Owner) &&
-    //         Password == room.Password &&
-    //         Name == room.Name &&
-    //         TimerDuration == room.TimerDuration;
-    //}
+    public override bool Equals(object obj)
+    {
+      return obj is Room room &&
+             Id == room.Id &&
+             EqualityComparer<User>.Default.Equals(Owner, room.Owner) &&
+             Password == room.Password &&
+             Name == room.Name &&
+             TimerDuration == room.TimerDuration;
+    }
 
     /// <summary>
     /// Переопределение хэш-кода.
     /// </summary>
     /// <returns>Целочисленный хэш-код.</returns>
-    //public override int GetHashCode()
-    //{
-    //  return HashCode.Combine(Id, Owner, Password, Name, TimerDuration);
-    //}
+    public override int GetHashCode()
+    {
+      return HashCode.Combine(Id, Owner, Password, Name, TimerDuration);
+    }
   }
 }

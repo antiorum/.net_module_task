@@ -60,6 +60,8 @@ namespace UnitTests
     /// </summary>
     protected IRepository<User> userRepository;
 
+    protected IRepository<UserCard> userMarksRepository;
+
     /// <summary>
     /// Сервис пользователей.
     /// </summary>
@@ -110,6 +112,8 @@ namespace UnitTests
     /// </summary>
     protected Users users;
 
+    protected UserMarks userMarks;
+
     /// <summary>
     /// Конфигурирует тестовое окружение перед каждым тестом.
     /// </summary>
@@ -123,11 +127,12 @@ namespace UnitTests
       this.discussionResultRepository = new DiscussionResultRepository();
       this.roomRepository = new RoomRepository();
       this.userRepository = new UserRepository();
+      this.userMarksRepository = new UserCardRepository();
 
       this.userService = new UserService(this.userRepository, this.context);
       this.cardService = new CardService(this.cardRepository, this.context, this.userService);
       this.deckService = new DeckService(this.deckRepository, this.cardRepository, this.context, this.userService);
-      this.discussionResultService = new DiscussionResultService(this.discussionResultRepository, this.cardRepository, this.userRepository);
+      this.discussionResultService = new DiscussionResultService(this.discussionResultRepository, this.cardRepository, this.userRepository, userMarksRepository);
       this.roomService = new RoomService(this.roomRepository, this.userRepository, this.deckRepository, this.context, this.userService, this.discussionResultService);
 
       this.userService.AddUserToConnectionMap("TestUser", "TestConnection");

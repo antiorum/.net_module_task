@@ -21,6 +21,10 @@ namespace DataService.InMemoryRepositories
       this.Save(results.TestDiscussionResult2);
     }
 
+    /// <summary>
+    /// Сохраняет сущность в репозиторий, при необходимости назначает ID.
+    /// </summary>
+    /// <param name="item">Сохраняемая сущность.</param>
     public override void Save(DiscussionResult item)
     {
       if (item.Id == 0)

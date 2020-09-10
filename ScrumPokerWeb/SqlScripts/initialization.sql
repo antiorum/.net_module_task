@@ -106,13 +106,13 @@ insert into Cards values
 ('eight.jpg', 'eight', null, 8),
 ('thirdteen.jpg', 'thirdteen', null, 13),
 ('coffee.jpg', 'coffee', null, null),
-('twenty.jpg', 'twenty', 'valera', 20),
-('forthy.jpg', 'forthy', 'valera', 40)
+('twenty.jpg', 'twenty', null, 20),
+('forthy.jpg', 'forthy', null, 40)
 
 
 insert into Decks values
 ('fib', null ),
-('somethingdeck', 'valera' )
+('somethingdeck', null)
 
 
 insert into CardsDecks values
@@ -126,20 +126,20 @@ insert into CardsDecks values
 (8, 2),
 (9, 2)
 
-insert into Users values ('valera'), ('Borya')
+--insert into Users values ('valera'), ('Borya')
 
-insert into Rooms values 
-('','Just Room', null, 1, 1),
-('1','Room of pain', 256, 2, 1),
-('','Room with timer', 666666, 2, 1)
+--insert into Rooms values 
+--('','Just Room', null, 1, 1),
+--('1','Room of pain', 256, 2, 1),
+--('','Room with timer', 666666, 2, 1)
 
-insert into UsersInRooms values 
-(1, 1),
-(2, 2)
+--insert into UsersInRooms values 
+--(1, 1),
+--(2, 2)
 
-insert into DiscussionResults values
-(GETDATE(), GETDATE(), 'test theme', 'test resume', 1)
+--insert into DiscussionResults values
+--(GETDATE(), GETDATE(), 'test theme', 'test resume', 1)
 
-insert into UsersCards values
-(1, 2, 1),
-(2, 3, 1)
+--insert into UsersCards values
+--(1, 2, 1),
+--(2, 3, 1)

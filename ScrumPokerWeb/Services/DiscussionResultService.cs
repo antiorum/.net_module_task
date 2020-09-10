@@ -97,6 +97,12 @@ namespace ScrumPokerWeb.Services
     public void ResetDiscussionResult(long id)
     {
       var result = this.resultRepository.Get(id);
+
+      foreach (var mark in result.UsersCards)
+      {
+        userCardRepository.Delete(mark.Id);
+      }
+
       result.Ending = DateTime.MinValue;
       result.Beginning = DateTime.Now;
       result.Resume = string.Empty;
@@ -135,7 +141,7 @@ namespace ScrumPokerWeb.Services
       this.resultRepository.Update(result);
     }
 
-    public void Delete(in long id)
+    public void Delete(long id)
     {
       resultRepository.Delete(id);
     }

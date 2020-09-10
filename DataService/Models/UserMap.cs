@@ -19,8 +19,8 @@ namespace DataService.Models
       Id(x => x.Id).GeneratedBy.Identity();
       Map(x => x.Name);
       HasManyToMany(x => x.Rooms)
-          .Cascade.All()
-          .Table("UsersInRooms");
+          .Cascade.SaveUpdate()
+          .Table("UsersInRooms").Not.LazyLoad();
     }
   }
 }

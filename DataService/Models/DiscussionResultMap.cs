@@ -18,7 +18,7 @@ namespace DataService.Models
       Map(x => x.Ending);
       Map(x => x.Theme);
       Map(x => x.Resume);
-      HasMany(x => x.UsersCards).Inverse().Cascade.All();
+      HasMany(x => x.UsersCards).Inverse().Cascade.All().Not.LazyLoad();
     }
   }
 }

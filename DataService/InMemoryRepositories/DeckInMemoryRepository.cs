@@ -21,6 +21,10 @@ namespace DataService.InMemoryRepositories
       this.Save(decks.PrivateDeck);
     }
 
+    /// <summary>
+    /// Сохраняет сущность в репозиторий, при необходимости назначает ID.
+    /// </summary>
+    /// <param name="item">Сохраняемая сущность.</param>
     public override void Save(Deck item)
     {
       if (item.Id == 0)

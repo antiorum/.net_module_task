@@ -77,7 +77,7 @@ namespace ScrumPokerWeb.Controllers
       string timerMinutes = Request.Form["timer"];
       if (timerMinutes == string.Empty) timerMinutes = "0";
       string deckId = Request.Form["deck"];
-      return service.Create(LoggedUser, password, name,timerMinutes, deckId);
+      return service.Create( LoggedUser, password, name,timerMinutes, deckId );
     }
 
     /// <summary>

@@ -25,6 +25,10 @@ namespace DataService.InMemoryRepositories
       this.Save(cards.CardTen);
     }
 
+    /// <summary>
+    /// Сохраняет сущность в репозиторий, при необходимости назначает ID.
+    /// </summary>
+    /// <param name="item">Сохраняемая сущность.</param>
     public override void Save(Card item)
     {
       if (item.Id == 0)

@@ -120,7 +120,7 @@ namespace ScrumPokerWeb.Services
           this.SendUpdateRoomToClients(room, "UpdateUsersInRoom").Wait();
         }
         //this.AddConnectionIdToGroup(loggedUser, room.Id).Wait();
-        return DtoConverters.GetRoomDto(this.roomRepository.Get(room.Id));
+        return DtoConverters.GetRoomDto(room);
       }
 
       throw new AccessViolationException("Неверный пароль к комнате");
@@ -367,7 +367,7 @@ namespace ScrumPokerWeb.Services
       }
     }
 
-    public void DeleteDiscussionResult(in long id, string loggedUser, long discussionId)
+    public void DeleteDiscussionResult(long id, string loggedUser, long discussionId)
     {
       var room = this.roomRepository.Get(id);
       if (room.Owner.Name != loggedUser)
