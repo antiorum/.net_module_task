@@ -49,11 +49,11 @@ namespace ScrumPokerWeb
       services.AddTransient<IRepository<Room>, RoomRepository>();
       services.AddTransient<IRepository<User>, UserRepository>();
       services.AddTransient<IRepository<UserCard>, UserCardRepository>();
-      //services.AddSingleton<IRepository<Card>, CardInMemoryRepository>();
-      //services.AddSingleton<IRepository<Deck>, DeckInMemoryRepository>();
-      //services.AddSingleton<IRepository<DiscussionResult>, DiscussionResultInMemoryRepository>();
-      //services.AddSingleton<IRepository<Room>, RoomInMemoryRepository>();
-      //services.AddSingleton<IRepository<User>, UserInMemoryRepository>();
+      // services.AddSingleton<IRepository<Card>, CardInMemoryRepository>();
+      // services.AddSingleton<IRepository<Deck>, DeckInMemoryRepository>();
+      // services.AddSingleton<IRepository<DiscussionResult>, DiscussionResultInMemoryRepository>();
+      // services.AddSingleton<IRepository<Room>, RoomInMemoryRepository>();
+      // services.AddSingleton<IRepository<User>, UserInMemoryRepository>();
       services.AddSingleton(typeof(RoomService));
       services.AddSingleton(typeof(CardService));
       services.AddSingleton(typeof(DeckService));

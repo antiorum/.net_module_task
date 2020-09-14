@@ -81,7 +81,11 @@ namespace ScrumPokerWeb.DTO
       }
     }
 
-    public virtual bool isCompleted => !Ending.Equals(DateTime.MinValue);
+    /// <summary>
+    /// Завершена ли дискуссия.
+    /// </summary>
+    /// <value>Булево значение.</value>
+    public virtual bool IsCompleted => !Ending.Equals(DateTime.MinValue);
 
     /// <summary>
     /// Переопределение эквивалентности для объектов одного класса.

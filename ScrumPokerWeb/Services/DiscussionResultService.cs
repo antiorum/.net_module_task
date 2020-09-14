@@ -23,6 +23,7 @@ namespace ScrumPokerWeb.Services
     /// <param name="resultRepository">Репозиторий результатов.</param>
     /// <param name="cardRepository">Репозиторий карт.</param>
     /// <param name="userRepository">Репозиторий пользователей.</param>
+    /// <param name="userCardRepository">Репозиторий оценок пользователей.</param>
     public DiscussionResultService(IRepository<DiscussionResult> resultRepository, IRepository<Card> cardRepository,
       IRepository<User> userRepository, IRepository<UserCard> userCardRepository)
     {
@@ -100,7 +101,7 @@ namespace ScrumPokerWeb.Services
 
       foreach (var mark in result.UsersCards)
       {
-        userCardRepository.Delete(mark.Id);
+        this.userCardRepository.Delete(mark.Id);
       }
 
       result.Ending = DateTime.MinValue;
@@ -130,10 +131,9 @@ namespace ScrumPokerWeb.Services
       userCard.Card = card;
       if (result.UsersCards.Count(userCard => userCard.User.Equals(user)) > 0)
       {
-        //result.UsersCards = result.UsersCards.Where(uc => !uc.User.Equals(user)).ToHashSet();
         UserCard oldUserCard = result.UsersCards.FirstOrDefault(uc => uc.User.Id == user.Id);
         result.UsersCards.Remove(oldUserCard);
-        userCardRepository.Delete(oldUserCard.Id);
+        this.userCardRepository.Delete(oldUserCard.Id);
         this.resultRepository.Update(result);
       }
       userCard.DiscussionResult = result;
@@ -141,16 +141,25 @@ namespace ScrumPokerWeb.Services
       this.resultRepository.Update(result);
     }
 
+    /// <summary>
+    /// Удалить результат обсуждения.
+    /// </summary>
+    /// <param name="id">ИД результата обсуждения.</param>
     public void Delete(long id)
     {
-      resultRepository.Delete(id);
+      this.resultRepository.Delete(id);
     }
 
+    /// <summary>
+    /// Изменить тему результата обсуждения.
+    /// </summary>
+    /// <param name="id">ИД результата обсуждения.</param>
+    /// <param name="newName">Новая тема.</param>
     public void Rename(long id, string newName)
     {
-      var discussionResult = resultRepository.Get(id);
+      var discussionResult = this.resultRepository.Get(id);
       discussionResult.Theme = newName;
-      resultRepository.Update(discussionResult);
+      this.resultRepository.Update(discussionResult);
     }
   }
 }

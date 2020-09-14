@@ -1,8 +1,11 @@
 ﻿using DataService.Models;
 
 namespace UnitTests.TestData
-{ 
-    public class UserMarks
+{
+  /// <summary>
+  /// Тестовые оценки пользователей.
+  /// </summary>
+  public class UserMarks
     {
         /// <summary>
         /// Тестовая оценка №1.
@@ -31,6 +34,9 @@ namespace UnitTests.TestData
             DiscussionResult = null,
         };
 
+        /// <summary>
+        /// Конструктор с инициализацией тестовых данных.
+        /// </summary>
         public UserMarks()
         {
             Cards cards = new Cards();

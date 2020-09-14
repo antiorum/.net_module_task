@@ -60,6 +60,9 @@ namespace UnitTests
     /// </summary>
     protected IRepository<User> userRepository;
 
+    /// <summary>
+    /// Репозиторий оценок пользователей.
+    /// </summary>
     protected IRepository<UserCard> userMarksRepository;
 
     /// <summary>
@@ -112,6 +115,9 @@ namespace UnitTests
     /// </summary>
     protected Users users;
 
+    /// <summary>
+    /// Тестовые оценки пользователей.
+    /// </summary>
     protected UserMarks userMarks;
 
     /// <summary>
@@ -132,7 +138,7 @@ namespace UnitTests
       this.userService = new UserService(this.userRepository, this.context);
       this.cardService = new CardService(this.cardRepository, this.context, this.userService);
       this.deckService = new DeckService(this.deckRepository, this.cardRepository, this.context, this.userService);
-      this.discussionResultService = new DiscussionResultService(this.discussionResultRepository, this.cardRepository, this.userRepository, userMarksRepository);
+      this.discussionResultService = new DiscussionResultService(this.discussionResultRepository, this.cardRepository, this.userRepository, this.userMarksRepository);
       this.roomService = new RoomService(this.roomRepository, this.userRepository, this.deckRepository, this.context, this.userService, this.discussionResultService);
 
       this.userService.AddUserToConnectionMap("TestUser", "TestConnection");

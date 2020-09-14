@@ -17,6 +17,8 @@ namespace ScrumPokerWeb.DTO
     /// <param name="deck">Используемая колода.</param>
     /// <param name="id">ИД комнаты.</param>
     /// <param name="timerDuration">Количество минут таймера.</param>
+    /// <param name="name">Имя комнаты.</param>
+    /// <param name="results">Результаты обсуждения в комнате.</param>
     public RoomDto(bool @protected, ISet<UserDto> users, UserDto owner, DeckDto deck, long id, TimeSpan? timerDuration, string name, ISet<DiscussionResultDto> results) : base(id)
     {
       this.Protected = @protected;
@@ -55,6 +57,7 @@ namespace ScrumPokerWeb.DTO
     /// <summary>
     /// Название комнаты.
     /// </summary>
+    /// <value>Строка с именем.</value>
     public string Name { get; }
 
     /// <summary>

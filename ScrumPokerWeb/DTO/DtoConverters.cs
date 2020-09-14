@@ -97,7 +97,7 @@ namespace ScrumPokerWeb.DTO
     {
       return new DiscussionResultDto(
           result.Beginning, result.Ending, result.Theme, result.Resume,
-          result.UsersCards.ToDictionary(uc => uc.User.Name, uc =>  GetCardDto(uc.Card)),
+          result.UsersCards.ToDictionary(uc => uc.User.Name, uc => GetCardDto(uc.Card)),
           result.Id);
     }
 

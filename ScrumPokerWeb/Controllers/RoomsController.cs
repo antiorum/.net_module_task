@@ -69,6 +69,7 @@ namespace ScrumPokerWeb.Controllers
     /// <summary>
     /// Создаёт новую комнату.
     /// </summary>
+    /// <returns>ИД созданной комнаты.</returns>
     [HttpPost]
     public long Post()
     {
@@ -77,7 +78,7 @@ namespace ScrumPokerWeb.Controllers
       string timerMinutes = Request.Form["timer"];
       if (timerMinutes == string.Empty) timerMinutes = "0";
       string deckId = Request.Form["deck"];
-      return service.Create( LoggedUser, password, name,timerMinutes, deckId );
+      return service.Create(LoggedUser, password, name, timerMinutes, deckId);
     }
 
     /// <summary>
@@ -101,6 +102,10 @@ namespace ScrumPokerWeb.Controllers
       service.ChangeRoomPassword(id, LoggedUser, newPassword);
     }
 
+    /// <summary>
+    /// Поменять таймер в комнате.
+    /// </summary>
+    /// <param name="id">ИД комнаты.</param>
     [HttpPut("{id}/changeTimer")]
     public void ChangeTimer(long id)
     {
@@ -175,12 +180,22 @@ namespace ScrumPokerWeb.Controllers
       service.RestartDiscussion(id, LoggedUser, discussionResultId);
     }
 
+    /// <summary>
+    /// Удалить результат обсуждения.
+    /// </summary>
+    /// <param name="id">ИД комнаты.</param>
+    /// <param name="discussionId">ИД результата обсуждения.</param>
     [HttpDelete("{id}/deleteDiscussion/{discussionId}")]
     public void DeleteDiscussionResult(long id, long discussionId)
     {
       service.DeleteDiscussionResult(id, LoggedUser, discussionId);
     }
 
+    /// <summary>
+    /// Изменить тему результата обсуждения.
+    /// </summary>
+    /// <param name="id">ИД комнаты.</param>
+    /// <param name="discussionId">ИД результата обсуждения.</param>
     [HttpPut("{id}/renameDiscussion/{discussionId}")]
     public void RenameDiscussionResult(long id, long discussionId)
     {
